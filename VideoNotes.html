@@ -1179,11 +1179,14 @@
             }
         }
     }
-    settingUtils.interaction.checkIfIE()
     settingUtils.interaction.checkLS()
+    settingUtils.read()
+
+    settingUtils.interaction.checkIfIE()
     settingUtils.interaction.checkPasteAPI()
     settingUtils.interaction.checkNW()
-    settingUtils.read()
+
+    settingUtils.write()
 
     if (settings.usingNW) {
         var nwWindow = nw.Window.get()
@@ -1374,17 +1377,17 @@
                         if (this.result.length == 0) {
                             alert('此文件没有内容或过大，加载失败。')
                         } else {
-                            openFile.open.loadLocal(this.result, '')
+                            openFile.open.loadLocal(this.result, '', name)
                         }
                     }
                 } else {
-                    openFile.open.loadLocal(URL.createObjectURL(selectedFile), type)
+                    openFile.open.loadLocal(URL.createObjectURL(selectedFile), type, name)
                 }
             },
-            loadLocal: function(url = '', type = new String()) {
+            loadLocal: function(url = '', type = new String(), name='') {
                 setTimeout(() => {
                     if (url.startsWith('data:video/') || type.startsWith('video/')) {
-                        videoPlayer.activate(url)
+                        videoPlayer.activate(url, name)
                     } else {
                         webFrame.load(url)
                     }
@@ -1432,7 +1435,7 @@
             notes.setActive()
         })
         shortcut.add(' ', (event) => {
-            if (event.target.tagName != 'TEXTAREA') {
+            if (event.target.tagName != 'TEXTAREA' && event.target.tagName != 'INPUT') {
                 togglePlayPause()
             }
         })
@@ -1445,7 +1448,7 @@
             }
         })
         shortcut.add('o', (event) => {
-            if (event.target.tagName != 'TEXTAREA') {
+            if (event.target.tagName != 'TEXTAREA' && event.target.tagName != 'INPUT') {
                 event.preventDefault()
                 modal.isOpen('openfile') ? modal.close('openfile') : modal.open('openfile')
             }
@@ -1615,6 +1618,7 @@
         },
         el: document.querySelector('iframe'),
         load: function(url = '', isOnlineStream = false) {
+            document.title = 'VideoNotes - Loading...'
             document.querySelector('video').classList.add('hidden')
             if (isOnlineStream) {
                 document.querySelector('.left').classList.add('bilibili')
@@ -1638,6 +1642,7 @@
         document.querySelector('#iframe-loading').classList.remove('transparent')
     }
     webFrame.el.onload = function() {
+        document.title = 'VideoNotes - ' + webFrame.el.contentWindow.document.title
         document.querySelector('#iframe-loading').classList.add('transparent')
         setTimeout(() => {
             document.querySelector('#iframe-loading').classList.replace('transparent', 'hidden')
@@ -1708,7 +1713,7 @@
             gui.updateRightHeight()
             throw e
         },
-        activate: function(url) {
+        activate: function(url, overrideTitle = '') {
             webFrame.el.classList.add('hidden')
             this.el.classList.remove('hidden')
             gui.el.left.classList.remove('hasframe')
@@ -1716,7 +1721,11 @@
             this.el.src = url
             this.inError = false
             document.querySelector('#time-edt').classList.remove('nodisplay')
-            document.title = 'VideoNotes - ' + this.el.src
+            if(overrideTitle){
+                document.title = 'VideoNotes - ' + overrideTitle
+            }else{
+                document.title = 'VideoNotes - ' + this.el.src
+            }
             this.isAvailable = true
             this.el.onerror = (e) => {
                 this.onError(e)
