@@ -1,0 +1,21 @@
+{
+  "name": "videonotes",
+  "version": "1.7.0",
+  "description": "Taking Notes while Watching Video",
+  "main": "VideoNotes.html",
+  "scripts": {
+    "dist": "build --tasks win-x64 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
+    "start": "run --x64 --mirror https://npm.taobao.org/mirrors/nwjs/ ."
+  },
+  "build": {
+    "nwVersion": "0.44.5"
+  },
+  "user-agent": "VideoNotes/%ver(%osinfo)",
+  "transparent": "true",
+  "show":"false",
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nwjs-builder-phoenix": "^1.15.0"
+  }
+}
