@@ -11,8 +11,10 @@
     "nwVersion": "0.44.5"
   },
   "user-agent": "VideoNotes/%ver(%osinfo)",
-  "transparent": "true",
-  "show":"false",
+  "window": {
+    "show": "false",
+    "icon": "./res/VNIcon.png"
+  },
   "author": "",
   "license": "ISC",
   "devDependencies": {
