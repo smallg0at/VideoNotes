@@ -1030,7 +1030,7 @@
                         <!-- <img src="./VideoNotes.svg" alt="" style="width: 100%;height: 100%;"> -->
                     </div>
                     <div>
-                        <h3 style="margin: 0.1em 0 0.5em;">VideoNotes 1.7.0-pre</h3>
+                        <h3 style="margin: 0.1em 0 0.5em;">VideoNotes 1.7.0</h3>
                         <p style="margin: 0 0 0.5em;">@smallg0at 编写, 2020/3/23</p>
                         <p style="margin: 0 0 0.5em;">服务器由 @steven12138z 提供</p>
                     </div>
@@ -1057,16 +1057,15 @@
                     以下类型可用：
                 </p>
                 <ul>
-                    <li>bilibili 视频：复制视频链接 或 输入av号（如av0000000）即可自动解析，支持分P不支持切换，不支持看番。</li>
+                    <li>bilibili 视频：复制视频链接 或 输入av或bv号即可自动解析，支持分P不支持切换，不支持看番。</li>
                     <li>acfun 视频：复制视频链接 或 输入ac号（如ac0000000）即可自动解析，由于内嵌播放器缘故不支持分P（默认1P），不支持看番。手机横屏观看时不建议全屏。</li>
-                    <li>网页：先输入<code>||</code>后面直接跟网页链接（二者间不可带空格）。有些网站可能拒绝接受iframe。</li>
+                    <li>网页：先输入 <code>||</code> 后面直接跟网页链接（二者间不可带空格）。有些网站可能拒绝接受iframe。</li>
                     <li>mp4 视频：输入视频URL即可。打开视频后如需再次打开，请刷新页面。</li>
                 </ul>
                 <p>
                     以下类型不可用：
                 </p>
                 <ul>
-                    <li>blob 协议：涉及到CORS，不做</li>
                     <li>flv：未来会做</li>
                 </ul>
                 <h3>笔记区帮助</h3>
@@ -1860,7 +1859,7 @@
         if (settings.usingNW) {
             nwWindow.show(true)
         }
-    }, 4000);
+    }, 400);
 
     notes.onFinishLoad()
 </script>
