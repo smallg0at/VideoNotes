@@ -4,7 +4,7 @@
   "description": "Taking Notes while Watching Video",
   "main": "VideoNotes.html",
   "scripts": {
-    "dist": "build --tasks win-x64 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
+    "dist": "build --tasks mac-x64 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
     "start": "run --x64 --mirror https://npm.taobao.org/mirrors/nwjs/ ."
   },
   "build": {

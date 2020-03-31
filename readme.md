@@ -2,6 +2,8 @@
 
 A web-based application created for those who take notes while watching video.
 
+[Download with GitHub Release](https://github.com/smallg0at/VideoNotes/releases)
+
 ## Features
 
 - Videos
@@ -28,4 +30,10 @@ Internet Explorer is not supported.
 ```
 npm install
 npm start
+```
+
+## Build
+
+```
+npm run dist
 ```
