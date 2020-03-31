@@ -9,8 +9,12 @@
   },
   "build": {
     "nwVersion": "stable",
-    "target": ["nsis7z"],
-    "excludes": ["./installer/*"],
+    "target": [
+      "nsis7z"
+    ],
+    "excludes": [
+      "./installer/*"
+    ],
     "packed": true,
     "win": {
       "productName": "VideoNotes",
@@ -19,7 +23,10 @@
     },
     "nsis": {
       "icon": "./res/VNIcon.ico",
-      "languages": ["SimpChinese", "English"]
+      "languages": [
+        "SimpChinese",
+        "English"
+      ]
     }
   },
   "user-agent": "VideoNotes/%ver(%osinfo)",
@@ -35,7 +42,5 @@
   "devDependencies": {
     "nwjs-builder-phoenix": "^1.15.0"
   },
-  "dependencies": {
-    "winresourcer": "^0.9.0"
-  }
+  "dependencies": {}
 }
