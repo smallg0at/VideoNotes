@@ -1,6 +1,6 @@
 {
   "name": "videonotes",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "Taking Notes while Watching Video",
   "main": "VideoNotes.html",
   "scripts": {
@@ -8,16 +8,34 @@
     "start": "run --x64 --mirror https://npm.taobao.org/mirrors/nwjs/ ."
   },
   "build": {
-    "nwVersion": "0.44.5"
+    "nwVersion": "stable",
+    "target": ["nsis7z"],
+    "excludes": ["./installer/*"],
+    "packed": true,
+    "win": {
+      "productName": "VideoNotes",
+      "companyName": "Jerry Liu",
+      "icon": "./res/VNIcon.ico"
+    },
+    "nsis": {
+      "icon": "./res/VNIcon.ico",
+      "languages": ["SimpChinese", "English"]
+    }
   },
   "user-agent": "VideoNotes/%ver(%osinfo)",
   "window": {
-    "show": "false",
-    "icon": "./res/VNIcon.png"
+    "show": false,
+    "icon": "./res/VNIcon.png",
+    "min_width": 250,
+    "min_height": 300,
+    "position": "center"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Jerry Liu",
+  "license": "MIT",
   "devDependencies": {
     "nwjs-builder-phoenix": "^1.15.0"
+  },
+  "dependencies": {
+    "winresourcer": "^0.9.0"
   }
 }
