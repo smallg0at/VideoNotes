@@ -1,5 +1,5 @@
 
-<img src="./res/VideoNotes.png" width="150" align="right" style="z-index: 100"></img>
+<img src="./res/VideoNotes.png" width="150" align="right" style="z-index: 100">
 
 # VideoNotes
 
