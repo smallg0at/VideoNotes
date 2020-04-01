@@ -1,3 +1,5 @@
+<img src="./res/VideoNotes.png" width=150 align="right" style="z-index: 100"></img>
+
 # VideoNotes
 
 A web-based application created for those who take notes while watching video.
