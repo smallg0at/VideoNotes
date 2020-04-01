@@ -5,7 +5,9 @@
   "main": "VideoNotes.html",
   "scripts": {
     "dist": "build --tasks win-x64 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
-    "start": "run --x64 --mirror https://npm.taobao.org/mirrors/nwjs/ ."
+    "dist32": "build --tasks win-x86 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
+    "start": "run --x64 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
+    "start32": "run --x86 --mirror https://npm.taobao.org/mirrors/nwjs/ ."
   },
   "build": {
     "nwVersion": "stable",
