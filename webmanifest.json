@@ -1,0 +1,26 @@
+{
+    "name": "VideoNotes",
+    "short_name": "VideoNotes",
+    "start_url": "./VideoNotes.html?from=web_manifest",
+    "display": "standalone",
+    "background_color": "#000",
+    "description": "Taking Notes while Watching Video.",
+    "icons": [{
+        "src": "./res/VN16.png",
+        "sizes": "16x16",
+        "type": "image/png"
+    }, {
+        "src": "./res/VNIcon.png",
+        "sizes": "64x64",
+        "type": "image/png"
+    }, {
+        "src": "./res/VideoNotesLQ.png",
+        "sizes": "256x256",
+        "type": "image/png"
+    }, {
+        "src": "./res/VideoNotes.png",
+        "sizes": "512x512",
+        "type": "image/png"
+    }],
+    "lang": "zh-CN"
+}
