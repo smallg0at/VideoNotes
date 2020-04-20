@@ -280,7 +280,44 @@
         }
 
         interaction:active {
-            transform: scale(0.9);
+            transform: scale(0.95);
+        }
+        context{
+            display: block;
+            position: relative;
+        }
+        context>interaction{
+            height: calc(100% - 10px);
+        }
+        context.isopen>interaction{
+            background-color: rgb(15, 15, 15);
+            border: 1px rgba(255, 255, 255, 0.116) solid;
+        }
+
+        operation{
+            display: flex;
+            flex-flow: column nowrap;
+            width: 200px;
+            background-color: rgb(15, 15, 15);
+            position: absolute;
+            bottom: calc(100%);
+            right: 0;
+            padding: 5px 5px;
+            border-radius: 3px;
+            border: 1px rgba(255, 255, 255, 0.116) solid;
+        }
+        operation>interaction{
+            margin-top: 0;
+            justify-content: flex-start;
+            padding: 10px 16px;
+            background-color: transparent;
+            border-radius: inherit;
+        }
+        operation>interaction:hover{
+            background-color: rgba(255,255,255,0.1);
+        }
+        operation>interaction:last-child{
+            margin-bottom: 0;
         }
 
         .timecontrols,
@@ -351,7 +388,7 @@
         iconlabel {
             display: inline;
             vertical-align: middle;
-            margin-left: 8px;
+            margin-left: 10px;
         }
 
         .ms-Icon {

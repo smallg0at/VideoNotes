@@ -29,16 +29,25 @@ var gui = {
     setInnerIcon: function(query, iconName, extraLabel = null, important = false) {
         document.querySelector(query).innerHTML = `<i class="ms-Icon ms-Icon--${iconName}" aria-hidden="true"></i>${(extraLabel ? `<iconlabel${(important ? ' class="important"' : '')}>${extraLabel}</iconlabel>` : '')}`
     },
+    toggleContextMenu: function(){
+        document.querySelector('#more-options').classList.toggle('hidden')
+        document.querySelector('#more-options').parentElement.classList.toggle('isopen')
+    },
+    windowIsOnTop: false,
+    toggleOnTop: function(){
+        nwWindow.setAlwaysOnTop(!this.windowIsOnTop)
+        this.windowIsOnTop = !this.windowIsOnTop
+        gui.setInnerIcon('#winontop', (this.windowIsOnTop ? 'CheckboxComposite' : 'Checkbox'),'窗口置顶',true)
+    },
     fullscreen: {
         toggle: function() {
-            console.log(settings.usingNW)
             if (settings.usingNW) {
                 nwWindow.toggleFullscreen()
                 if (!nwWindow.isFullscreen) {
-                    gui.setInnerIcon('#fullscreen', 'BackToWindow')
+                    gui.setInnerIcon('#fullscreen', 'BackToWindow', '退出全屏 (f)', true)
                     // document.querySelector('#fullscreen').innerHTML = "退出全屏"
                 } else {
-                    gui.setInnerIcon('#fullscreen', 'FullScreen')
+                    gui.setInnerIcon('#fullscreen', 'FullScreen', '全屏 (f)', true)
                     // document.querySelector('#fullscreen').innerHTML = "全屏"
                 }
             } else {
@@ -68,18 +77,29 @@ var gui = {
         onChange: function(forceValue = null) {
             console.log(forceValue)
             if (document.fullscreenElement || document.fullscreen) {
-                gui.setInnerIcon('#fullscreen', 'BackToWindow')
+                gui.setInnerIcon('#fullscreen', 'BackToWindow', '退出全屏 (f)', true)
                 // document.querySelector('#fullscreen').innerHTML = "退出全屏"
             } else {
-                gui.setInnerIcon('#fullscreen', 'FullScreen')
+                gui.setInnerIcon('#fullscreen', 'FullScreen', '全屏 (f)', true)
                 // document.querySelector('#fullscreen').innerHTML = "全屏"
             }
         }
     }
 }
 window.onresize = gui.updateRightHeight()
+document.querySelector('#fullscreen').onclick = ()=> gui.fullscreen.toggle()
+document.querySelector('#context-toggle').onclick = ()=>gui.toggleContextMenu()
+document.querySelector('#winontop').onclick = ()=>{gui.toggleOnTop()}
+document.querySelectorAll('context>operation>interaction').forEach(item=>{
+    item.addEventListener('click', ()=>{
+        gui.toggleContextMenu()
+    })
+})
 document.onfullscreenchange = gui.fullscreen.onChange()
 gui.updateRightHeight()
+if(!settings.usingNW){
+    document.querySelector('#winontop').classList.add('hidden')
+}
 
 
 var notes = {
@@ -507,6 +527,9 @@ function togglePlayPause() { //onclick playpause button
         videoPlayer.isPaused() ? videoPlayer.play() : videoPlayer.pause()
     }
 }
+document.querySelector('#playpause').onclick = ()=>{
+    togglePlayPause()
+}
 
 var videoPlayer = {
     el: document.querySelector('video'),
@@ -674,7 +697,12 @@ setTimeout(() => {
         // modal.open('settings')
         openFile.el.textBox.select()
     }
-    document.querySelector('#load-cover').parentElement.removeChild(document.querySelector('#load-cover'))
+    if(DEBUGMODE.devAction){
+        document.querySelector('#load-cover').parentElement.removeChild(document.querySelector('#load-cover'))
+    }
 }, 1000);
-
+if (!DEBUGMODE.devAction) {
+    document.querySelector('#load-cover').parentElement.removeChild(document.querySelector('#load-cover'))
+}
 notes.onFinishLoad()
+

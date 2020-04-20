@@ -5,35 +5,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VideoNotes</title>
-    <link rel="stylesheet" importance="high" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css" />
+    <!-- <link rel="stylesheet" importance="high" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css" /> -->
+    <link rel="stylesheet" href="./msIcons.css">
     <link rel="shortcut icon" sizes="128 x 128" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAQcSURBVHhe7dsxL2xBGMbxcQsqHYVIJDqFUEkUFFqNROEDiFZJqVBSivgEGoVSq6CQqIhColCpiEZFc+8+kzObY+PYdc05M7Pz/yXsHm5xY97zzDszZw0AAAAAAAAAAAAAAACAPjKgb39b7BWyMtDyp3gPj1K6nz4lQKsg9IJfuLi4KN4Zs7i4WLyLiytQEgCGAsgcU4BnVVNA+echlP8vTAFoIwE865YACwsL9rUpl5eX9pUEwJcogMxRAJmjADJHE+gZy0AkhQTwrCoBYkICoI0CyBwFkDl6AM9YBSApJIBn3RIg+8OgpaUls7m5WVwhtCBTwNramjk7O7PFgLCC9QDDw8Nmd3fXHB4emunp6eKnaFqwAhgZGbGvMzMz5ujoiGkhkMabQMW+7nwVwNTUlLm/vzcvLy/Fb43Z2dkx5+fnxVV6WAb+kIpgdna2nQgqjpOTE6aFhgRPgDIlwePjo3l/f7fXSgIlQkqqEiAmUSVAmYpibm7OjI+P22sVi/6gWjWgHlEVgDM5OWkLwU0LahA1LbBs9C/KApChoSE7RehL78fGxuzUsb+/b0ZHR4t/hd+Kqgf4ztPTk+0PHCXCwcFBcRUPVgE1UV+gfXQ3LbCb6EcyCVCm1YIS4e3tzV7f3t7azaS7uzt7HVK3BOCTQR6oeLR34AqI3cT/l2QBOCqEzmlBdxrTQu+SLgBHSdC5m3h8fMxuYg/6ogBEp4sqBDctTExM2GlBxYBqSTaBvdCSUY2ioyWjlo51YxkYCXYTe9O3CVDWech0dXVl9vb2zPPzs732qSoBYpJFApSp2JQGSgWZn583p6enHDK1ZFEAqJZFAWgKuL6+bp8laApYXV1tpCmMXV/3AJrzNejukTNtHW9vb9e6ZcwqIBIaeN31bvD1ZNHy8nIU5wUx6bsEaLLj/0q3BOAwqCYa8JubG/uUsd6/vr7aeX5ra6uxwU9R8gWgwdagK+41x+tLcb+yssLA9yDpAlDc61kAN8/rKWLN8yl/rqBpSRaA7nLd8S7u3bIutUfIY5BUE6jB7lzW6SHRmO54loE10cleeVmn0z3i/veiT4DQy7qfqkqAmCSRAK67d/O86+5Z1vkVZQFU7eIR9/5FVQAacA28e5LHdfcMfH2i6AFc3CvmRbt4GxsbSUY9q4AfcAPPLl44QRNAA17u7tXgpa5bAnAYVNB8r8F/eHhoH9qgecEKwMX9+vo6cR9QkALQo1gs6+LQeAFo0GP8XH+uGm8C+x3LQCSFBPCsKgFiQgKgjQLIHAWQOXoAz1gFICkkgGfdEoDDIESFAsgcBZA5CiBzNIGesQxEUkgAz6oSICYkANoogMxRAJn71APAj4+PDzM4OFhcxUs9AAWQMTf+AAAAAAAAAAAAAAAAAAAAAAAASI4x/wDxTht4UVJ/sAAAAABJRU5ErkJggg==" type="image/x-icon">
     <link rel="shortcut icon" href="./res/VNIcon.ico" type="image/x-icon">
     <!-- <link rel="shortcut icon" sizes="16 x 16" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADvSURBVFhH7ZbNDcIwDIULc7AIgzAIa3HlzAbc2IQbp9bPxVGwZMuBIB+aT3pyQl3r9fETpsHm2ZHmdZnHPwxEZ86SAGpPZKZnpFyPum0hOnPevxdpeAaOpF/Twf2WmEgCD9JhXTaD99lSobhRSAKiMymKNVPDfVazNvAk3UiRNGRmfb8W4CobjTZQ60TyQE8E7rOaPQNI40qy0kBPBO6zmj0DtS4kDV6XaglwlY3GM/AipSaQ8hnAU99Jad+CtN+B6FPXdDXwDXIfqiXAVTY9ic7MP45xKsHtx+nUAZnpJVGuR+NqITqz/CccDLbKNC3BYZd+KkW/eAAAAABJRU5ErkJggg==" type="image/x-icon"> -->
     <link rel="manifest" href="./webmanifest.json">
     <style>
-        #load-cover{
+        #load-cover {
             position: fixed;
             top: 0;
             bottom: 0;
             left: 0;
             right: 0;
             background-color: black;
-            color: rgba(255, 255, 255,0.8);
+            color: rgba(255, 255, 255, 0.8);
             display: flex;
             flex-flow: column nowrap;
             justify-content: center;
             align-content: center;
+            align-items: center;
             z-index: 99999;
             text-align: center;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            transition: all .25s;
+            cursor: default;
         }
     </style>
-    <link rel="stylesheet" href="./main.css">
 </head>
 
 <body>
     <div id="load-cover">
-        <h1 style="font-size: 60px;font-weight: normal;margin-bottom: 0;">VideoNotes</h1>
-        <p>Loading...</p>
+        <img src="./res/VideoNotesLQ.png" alt="" width="128" height="128">
+        <h1 style="font-size: 60px;font-weight: normal;margin: 0;">VideoNotes</h1>
+        <p id="load-text">加载中...</p>
     </div>
     <div class="left">
         <video src="about:blank"></video>
@@ -78,10 +86,25 @@
                 </interaction>
                 <!-- <interaction onclick="toggleInfo()" id="info" style="width: 50px"><i class="ms-Icon ms-Icon--Info" aria-hidden="true"></i>
                 </interaction> -->
-                <interaction id="settings-btn" data-modal="settings" style="width: 50px" title="设置 (s)"><i class="ms-Icon ms-Icon--Settings" id="settings-icon" aria-hidden="true"></i>
-                </interaction>
-                <interaction onclick="gui.fullscreen.toggle()" id="fullscreen" style="width: 50px" title="全屏 (f)"><i class="ms-Icon ms-Icon--FullScreen" aria-hidden="true"></i>
-                </interaction>
+                <context>
+                    <interaction haschild style="width: 50px" title="" id="context-toggle">
+                        <i class="ms-Icon ms-Icon--GlobalNavButton" aria-hidden="true"></i>
+                    </interaction>
+                    <operation id="more-options" class="hidden">
+                        <interaction id="settings-btn" data-modal="settings" title="设置 (s)">
+                            <i class="ms-Icon ms-Icon--Settings" id="settings-icon" aria-hidden="true"></i>
+                            <iconlabel class="important">设置 (s)</iconlabel>
+                        </interaction>
+                        <interaction id="winontop" title="窗口置顶">
+                            <i class="ms-Icon ms-Icon--Checkbox" aria-hidden="true"></i>
+                            <iconlabel class="important">窗口置顶</iconlabel>
+                        </interaction>
+                        <interaction id="fullscreen" title="全屏 (f)">
+                            <i class="ms-Icon ms-Icon--FullScreen" aria-hidden="true"></i>
+                            <iconlabel class="important">全屏 (f)</iconlabel>
+                        </interaction>
+                    </operation>
+                </context>
             </div>
         </div>
     </div>
@@ -174,21 +197,28 @@
         </div>
     </modal>
 </body>
-
+<link rel="stylesheet" href="./main.css">
+<script id="flag"></script>
 <script id="compat">
-    try{
-        let es6Test = ()=>{
-            return 1
-        }
-    }catch(e){
+    function removeCover(){
+        document.querySelector('#load-cover').parentElement.removeChild(document.querySelector('#load-cover'))
+    }
+    if (navigator.userAgent.indexOf('Trident') != -1 && navigator.userAgent.indexOf('Edge') == -1) {
+        console.log(navigator.userAgent)
+        document.getElementById('ie-warning').classList.remove('hidden')
+        settings.isIE = true
+        document.querySelector('#load-text').innerHTML = "VideoNotes 不支持 Internet Explorer，请更换浏览器使用。"
+        document.querySelector('#load-cover>h1').innerHTML = "⚠"
+        document.querySelector('#load-cover>img').parentElement.removeChild(document.querySelector('#load-cover>img'))
         var altScript = document.createElement('script')
         altScript.src = './settings.mjs'
         altScript.type = 'text/javascript'
-        document.insertBefore(altScript, document.querySelector('#compat'))
+        // document.insertBefore(altScript, document.querySelector('#flag'))
         console.log('ES6 Compat!')
     }
 </script>
 <script src="./main.mjs" type="module"></script>
+
 
 <style>
     .logo,

@@ -39,7 +39,7 @@
   ],
   "user-agent": "VideoNotes/%ver(%osinfo)",
   "window": {
-    "show": false,
+    "show": true,
     "icon": "./res/VNIcon.png",
     "min_width": 250,
     "min_height": 300,
