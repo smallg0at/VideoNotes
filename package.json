@@ -10,7 +10,7 @@
     "start32": "run --x86 --mirror https://npm.taobao.org/mirrors/nwjs/ ."
   },
   "build": {
-    "nwVersion": "stable",
+    "nwVersion": "0.44.5",
     "target": [
       "nsis7z"
     ],
@@ -31,6 +31,12 @@
       ]
     }
   },
+  "node-remote": [
+    "https://player.bilibili.com/*",
+    "*://xbeibeix.com/*",
+    "https://*.acfun.cn/player/*",
+    "*://web.microsoftstream.com/*"
+  ],
   "user-agent": "VideoNotes/%ver(%osinfo)",
   "window": {
     "show": false,
@@ -42,6 +48,7 @@
   "author": "Jerry Liu",
   "license": "MIT",
   "devDependencies": {
+    "eslint": "^6.8.0",
     "nwjs-builder-phoenix": "^1.15.0"
   },
   "dependencies": {}
