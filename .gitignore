@@ -3,4 +3,5 @@ dist
 *.iss
 LICENSE.txt
 installer
-fabric.css
+src/fabric.css
+main-c1.js

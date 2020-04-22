@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VideoNotes</title>
     <!-- <link rel="stylesheet" importance="high" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css" /> -->
-    <link rel="stylesheet" href="./msIcons.css">
+    <link rel="stylesheet" href="./src/msIcons.css">
     <link rel="shortcut icon" sizes="128 x 128" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAQcSURBVHhe7dsxL2xBGMbxcQsqHYVIJDqFUEkUFFqNROEDiFZJqVBSivgEGoVSq6CQqIhColCpiEZFc+8+kzObY+PYdc05M7Pz/yXsHm5xY97zzDszZw0AAAAAAAAAAAAAAACAPjKgb39b7BWyMtDyp3gPj1K6nz4lQKsg9IJfuLi4KN4Zs7i4WLyLiytQEgCGAsgcU4BnVVNA+echlP8vTAFoIwE865YACwsL9rUpl5eX9pUEwJcogMxRAJmjADJHE+gZy0AkhQTwrCoBYkICoI0CyBwFkDl6AM9YBSApJIBn3RIg+8OgpaUls7m5WVwhtCBTwNramjk7O7PFgLCC9QDDw8Nmd3fXHB4emunp6eKnaFqwAhgZGbGvMzMz5ujoiGkhkMabQMW+7nwVwNTUlLm/vzcvLy/Fb43Z2dkx5+fnxVV6WAb+kIpgdna2nQgqjpOTE6aFhgRPgDIlwePjo3l/f7fXSgIlQkqqEiAmUSVAmYpibm7OjI+P22sVi/6gWjWgHlEVgDM5OWkLwU0LahA1LbBs9C/KApChoSE7RehL78fGxuzUsb+/b0ZHR4t/hd+Kqgf4ztPTk+0PHCXCwcFBcRUPVgE1UV+gfXQ3LbCb6EcyCVCm1YIS4e3tzV7f3t7azaS7uzt7HVK3BOCTQR6oeLR34AqI3cT/l2QBOCqEzmlBdxrTQu+SLgBHSdC5m3h8fMxuYg/6ogBEp4sqBDctTExM2GlBxYBqSTaBvdCSUY2ioyWjlo51YxkYCXYTe9O3CVDWech0dXVl9vb2zPPzs732qSoBYpJFApSp2JQGSgWZn583p6enHDK1ZFEAqJZFAWgKuL6+bp8laApYXV1tpCmMXV/3AJrzNejukTNtHW9vb9e6ZcwqIBIaeN31bvD1ZNHy8nIU5wUx6bsEaLLj/0q3BOAwqCYa8JubG/uUsd6/vr7aeX5ra6uxwU9R8gWgwdagK+41x+tLcb+yssLA9yDpAlDc61kAN8/rKWLN8yl/rqBpSRaA7nLd8S7u3bIutUfIY5BUE6jB7lzW6SHRmO54loE10cleeVmn0z3i/veiT4DQy7qfqkqAmCSRAK67d/O86+5Z1vkVZQFU7eIR9/5FVQAacA28e5LHdfcMfH2i6AFc3CvmRbt4GxsbSUY9q4AfcAPPLl44QRNAA17u7tXgpa5bAnAYVNB8r8F/eHhoH9qgecEKwMX9+vo6cR9QkALQo1gs6+LQeAFo0GP8XH+uGm8C+x3LQCSFBPCsKgFiQgKgjQLIHAWQOXoAz1gFICkkgGfdEoDDIESFAsgcBZA5CiBzNIGesQxEUkgAz6oSICYkANoogMxRAJn71APAj4+PDzM4OFhcxUs9AAWQMTf+AAAAAAAAAAAAAAAAAAAAAAAASI4x/wDxTht4UVJ/sAAAAABJRU5ErkJggg==" type="image/x-icon">
     <link rel="shortcut icon" href="./res/VNIcon.ico" type="image/x-icon">
     <!-- <link rel="shortcut icon" sizes="16 x 16" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADvSURBVFhH7ZbNDcIwDIULc7AIgzAIa3HlzAbc2IQbp9bPxVGwZMuBIB+aT3pyQl3r9fETpsHm2ZHmdZnHPwxEZ86SAGpPZKZnpFyPum0hOnPevxdpeAaOpF/Twf2WmEgCD9JhXTaD99lSobhRSAKiMymKNVPDfVazNvAk3UiRNGRmfb8W4CobjTZQ60TyQE8E7rOaPQNI40qy0kBPBO6zmj0DtS4kDV6XaglwlY3GM/AipSaQ8hnAU99Jad+CtN+B6FPXdDXwDXIfqiXAVTY9ic7MP45xKsHtx+nUAZnpJVGuR+NqITqz/CccDLbKNC3BYZd+KkW/eAAAAABJRU5ErkJggg==" type="image/x-icon"> -->
@@ -33,6 +33,7 @@
             -ms-user-select: none;
             transition: all .25s;
             cursor: default;
+            transition: .3s all;
         }
     </style>
 </head>
@@ -68,9 +69,9 @@
             <i class="ms-Icon ms-Icon--StatusErrorFull" aria-hidden="true"></i>
             <iconlabel class="important">JavaScript 未被启用。<br>本网页将无法正常工作。<br>如果您已启用 JavaScript 页面却未工作，请下载网页后用浏览器打开。</iconlabel>
         </noscript>
-        <div class="error fix hidden" id="ie-warning">
+        <div class="error fix hidden" id="ie-warning" style="opacity: .6;">
             <i class="ms-Icon ms-Icon--DRM" aria-hidden="true"></i>
-            <iconlabel class="important">本网页不支持 Internet Explorer，无法正常工作。<br>建议更换 Chromium 内核的浏览器。</iconlabel>
+            <iconlabel class="important">本网页对于 Internet Explorer 的支持不佳，不一定能正常工作。<br>建议更换 Chromium 内核的浏览器。</iconlabel>
         </div>
 
         <div>
@@ -91,6 +92,10 @@
                         <i class="ms-Icon ms-Icon--GlobalNavButton" aria-hidden="true"></i>
                     </interaction>
                     <operation id="more-options" class="hidden">
+                        <interaction id="refresh" title="重新加载应用">
+                            <i class="ms-Icon ms-Icon--Refresh" aria-hidden="true"></i>
+                            <iconlabel class="important">重新加载应用</iconlabel>
+                        </interaction>
                         <interaction id="settings-btn" data-modal="settings" title="设置 (s)">
                             <i class="ms-Icon ms-Icon--Settings" id="settings-icon" aria-hidden="true"></i>
                             <iconlabel class="important">设置 (s)</iconlabel>
@@ -197,7 +202,7 @@
         </div>
     </modal>
 </body>
-<link rel="stylesheet" href="./main.css">
+<link rel="stylesheet" href="./src/main.css">
 <script id="flag"></script>
 <script id="compat">
     function removeCover(){
@@ -207,17 +212,24 @@
         console.log(navigator.userAgent)
         document.getElementById('ie-warning').classList.remove('hidden')
         settings.isIE = true
-        document.querySelector('#load-text').innerHTML = "VideoNotes 不支持 Internet Explorer，请更换浏览器使用。"
-        document.querySelector('#load-cover>h1').innerHTML = "⚠"
-        document.querySelector('#load-cover>img').parentElement.removeChild(document.querySelector('#load-cover>img'))
+        document.querySelector('#load-text').innerHTML = "VideoNotes 不一定支持 Internet Explorer，请更换浏览器使用。"
+        var altScript0 = document.createElement('script')
+        altScript0.src = './src/ie-polyfill.js'
+        altScript0.type = 'text/javascript'
+        document.documentElement.appendChild(altScript0)
         var altScript = document.createElement('script')
-        altScript.src = './settings.mjs'
+        altScript.src = './src/main-comp.js'
         altScript.type = 'text/javascript'
+        document.documentElement.appendChild(altScript)
+        document.documentElement.classList.add('is-ie')
+        document.querySelector('#playpause').setAttribute('onclick','togglePlayPause()')
+
         // document.insertBefore(altScript, document.querySelector('#flag'))
         console.log('ES6 Compat!')
     }
 </script>
-<script src="./main.mjs" type="module"></script>
+
+<script src="./src/main.mjs" type="module"></script>
 
 
 <style>

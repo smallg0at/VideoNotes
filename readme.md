@@ -28,7 +28,7 @@ A web-based application created for those who take notes while watching video.
 
 simply open `VideoNotes.html` in any browser or serve on a server.
 
-Internet Explorer is not supported.
+Internet Explorer is supported, but its scripts should be compiled from main.mjs with `npm run babel` first.
 
 ### node.js (nw.js)
 
