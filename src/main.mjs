@@ -4,13 +4,15 @@ document.querySelector('video').src = "";
 var textareaItem = document.querySelector('textarea');
 var frameCount = 0;
 
-import {
+import{
     settings,
+    DEBUGMODE,
     settingUtils,
     nwWindow,
-    nwClip,
-    DEBUGMODE
+    nwClip
 } from './settings.mjs'
+
+
 
 var gui = {
     el: {
@@ -29,15 +31,15 @@ var gui = {
     setInnerIcon: function(query, iconName, extraLabel = null, important = false) {
         document.querySelector(query).innerHTML = `<i class="ms-Icon ms-Icon--${iconName}" aria-hidden="true"></i>${(extraLabel ? `<iconlabel${(important ? ' class="important"' : '')}>${extraLabel}</iconlabel>` : '')}`
     },
-    toggleContextMenu: function(){
+    toggleContextMenu: function() {
         document.querySelector('#more-options').classList.toggle('hidden')
         document.querySelector('#more-options').parentElement.classList.toggle('isopen')
     },
     windowIsOnTop: false,
-    toggleOnTop: function(){
+    toggleOnTop: function() {
         nwWindow.setAlwaysOnTop(!this.windowIsOnTop)
         this.windowIsOnTop = !this.windowIsOnTop
-        gui.setInnerIcon('#winontop', (this.windowIsOnTop ? 'CheckboxComposite' : 'Checkbox'),'窗口置顶',true)
+        gui.setInnerIcon('#winontop', (this.windowIsOnTop ? 'CheckboxComposite' : 'Checkbox'), '窗口置顶', true)
     },
     fullscreen: {
         toggle: function() {
@@ -90,16 +92,31 @@ window.onresize = gui.updateRightHeight()
 document.querySelector('#fullscreen').onclick = ()=> gui.fullscreen.toggle()
 document.querySelector('#context-toggle').onclick = ()=>gui.toggleContextMenu()
 document.querySelector('#winontop').onclick = ()=>{gui.toggleOnTop()}
+document.querySelector('#refresh').onclick = () => {
+    let tempElement = document.createElement('div')
+    tempElement.id = 'load-cover'
+    tempElement.style.opacity = 0
+    document.documentElement.appendChild(tempElement)
+    setTimeout(()=>{
+        tempElement.style.opacity = 1
+        setTimeout(() => {
+            tempElement.style.opacity = 1
+            location.reload()
+        }, 250)
+    },100)
+}
 document.querySelectorAll('context>operation>interaction').forEach(item=>{
     item.addEventListener('click', ()=>{
         gui.toggleContextMenu()
     })
 })
-document.onfullscreenchange = gui.fullscreen.onChange()
 gui.updateRightHeight()
 if(!settings.usingNW){
     document.querySelector('#winontop').classList.add('hidden')
 }
+document.addEventListener('fullscreenchange', () => {
+    gui.fullscreen.onChange()
+})
 
 
 var notes = {
@@ -155,22 +172,13 @@ var openFile = {
         openButton: document.querySelector('#URLopen')
     },
     gui: {
-        pasteContent: async function(e) {
+        pasteContent: function(e) {
             e.preventDefault()
             if (settings.usingNW) {
                 document.querySelector('#URLtextbox').value = nwClip.get()
             } else {
                 if (navigator.clipboard.readText) {
-                    // document.querySelector('#URLtextbox').value = await navigator.clipboard.readText();
-                    navigator.clipboard.readText()
-                        .then((text) => {
-                            document.querySelector('#URLtextbox').value = text
-                        })
-                        .catch(err => {
-                            // This can happen if the user denies clipboard permissions:
-                            document.querySelector('#URLpaste').classList.add('hidden')
-                            console.info('CLIPBOARD Denied', err)
-                        });
+                    this.pasteNew()
                 } else {
                         document.querySelector('#URLtextbox').select()
                         document.execCommand('paste')
@@ -187,6 +195,18 @@ var openFile = {
             }
             document.querySelector('#URLtextbox').select()
         },
+        pasteNew: async function() {
+            navigator.clipboard.readText()
+                .then((text) => {
+                    document.querySelector('#URLtextbox').value = text
+                })
+                .catch(err => {
+                    // This can happen if the user denies clipboard permissions:
+                    document.querySelector('#URLpaste').classList.add('hidden')
+                    console.info('CLIPBOARD Denied', err)
+                });
+                //》
+        }
 
     },
     open: {
@@ -239,6 +259,11 @@ document.querySelector('#URLpaste').onclick = (event) => openFile.gui.pasteConte
 var shortcut = {
     list: new Map(),
     count: 0,
+    defaultKeyOptions: {
+        ctrl: false,
+        shift: false,
+        alt: false,
+    },
     add: function(key, func) {
         return this.list.set(key, func)
     },
@@ -521,15 +546,20 @@ function onSubmitVideoURL() {
 
 
 function togglePlayPause() { //onclick playpause button
-    if (videoPlayer.el.src == window.location.href || videoPlayer.inError) {
+    if (window.location.href.indexOf(videoPlayer.el.src) != -1 || videoPlayer.inError) {
         modal.open('openfile')
     } else {
-        videoPlayer.isPaused() ? videoPlayer.play() : videoPlayer.pause()
+        if(videoPlayer.isPaused()){
+            videoPlayer.play()
+        }else{
+            videoPlayer.pause()
+        }
+        // videoPlayer.isPaused() ? videoPlayer.play() : videoPlayer.pause()
     }
 }
-document.querySelector('#playpause').onclick = ()=>{
-    togglePlayPause()
-}
+document.querySelector('#playpause').addEventListener('click', function() {
+    togglePlayPause();
+})
 
 var videoPlayer = {
     el: document.querySelector('video'),
@@ -643,6 +673,9 @@ var modal = {
             let theElement = document.querySelector('modal#' + target)
             theElement.style.zIndex = this.basezindex++;
             theElement.classList.remove('hidden')
+            if(settings.isIE){
+                theElement.style.position = "relative"
+            }
             setTimeout(() => {
                 theElement.classList.remove('fadeout')
             }, 10)
@@ -697,12 +730,11 @@ setTimeout(() => {
         // modal.open('settings')
         openFile.el.textBox.select()
     }
-    if(DEBUGMODE.devAction){
+    if(!DEBUGMODE.devAction){
         document.querySelector('#load-cover').parentElement.removeChild(document.querySelector('#load-cover'))
     }
 }, 1000);
-if (!DEBUGMODE.devAction) {
+if (DEBUGMODE.devAction) {
     document.querySelector('#load-cover').parentElement.removeChild(document.querySelector('#load-cover'))
 }
 notes.onFinishLoad()
-

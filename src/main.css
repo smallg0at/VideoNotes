@@ -305,6 +305,7 @@
             padding: 5px 5px;
             border-radius: 3px;
             border: 1px rgba(255, 255, 255, 0.116) solid;
+            z-index: 20;
         }
         operation>interaction{
             margin-top: 0;
@@ -409,7 +410,7 @@
             padding: 12px 16px;
             opacity: .8;
             backdrop-filter: blur(2px);
-            z-index: 20;
+            z-index: 19;
             flex-shrink: 0;
             justify-content: flex-start !important;
             user-select: none;
@@ -438,6 +439,12 @@
             z-index: 10000;
             transition: .25s all;
         }
+        .is-ie modal{
+            position: relative;
+            display: flex;
+            flex-wrap: nowrap;
+            flex-shrink: 2;
+        }
 
         div.modal-card {
             display: block;
@@ -458,6 +465,17 @@
             transform: translateY(0) scale(1);
             opacity: 1;
         }
+        .is-ie .modal-card{
+            width: 100%;
+            height: 100%;
+            max-width: none;
+            max-height: none;
+            min-width: auto;
+            box-sizing: border-box;
+            border: none;
+            border-left: 2px solid rgb(92, 92, 92);
+            border-radius: 0;
+        }
 
         #info .modal-card a {
             color: white !important;
@@ -470,6 +488,7 @@
             overflow-y: auto;
             overflow-x: hidden;
             padding: 25px;
+            scrollbar-face-color: rgba(138, 138, 138, 0.6);
         }
 
         .modal-content::-webkit-scrollbar-thumb {
@@ -681,6 +700,10 @@
                 flex-direction: column;
             }
 
+            operation{
+                top: 100%;
+                bottom: inherit;
+            }
             div.left {
                 width: 100%;
                 height: auto;
@@ -809,6 +832,14 @@
                 padding-bottom: 25px;
             }
 
+            .is-ie modal{
+                flex-shrink: 1.2
+            }
+            .is-ie .modal-card {
+                border-left: none;
+                border-top: 2px solid rgb(92, 92, 92);
+            }
+
             .logo {
                 zoom: 0.65;
             }
@@ -879,6 +910,10 @@
         @media (max-width: 1024px) and (min-aspect-ratio: 3/1) {
 
             /* Landscape, keyboard on */
+            operation {
+                top: 100%;
+                bottom: inherit;
+            }
             .timecontrols {
                 display: none !important;
             }
