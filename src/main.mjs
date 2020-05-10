@@ -563,6 +563,7 @@ webFrame.el.contentWindow.onbeforeunload = () => {
 }
 webFrame.el.onload = function() {
     document.title = 'VideoNotes - ' + webFrame.el.contentWindow.document.title
+    gui.loadIndicator.hide()
     if (gui.mode == 'bilibili' && settings.usingNW) {
         let insertedStyle = webFrame.el.contentDocument.createElement('style')
         insertedStyle.innerHTML = `.bilibili-player .bilibili-player-area div.bilibili-player-video-control{background: black;border-color: black;opacity: 0.8}.bilibili-player-video-recommend-container, .bilibili-player-video-recommend,.bilibili-player-video-jump-to-bilibili-detail-bar,.bilibili-player-video-sendjumbar,.bilibili-player-video-pause-panel-container-qrcode,.bilibili-player-video-suspension-bar-btn-group-jumpbtn{	display: none !important;}.bilibili-player .bilibili-player-area .bilibili-player-video-control .bilibili-player-video-progress-bar{opacity: 0.6}.bilibili-player-video-sendjumpbar{display:none}div.bilibili-player-video-control{opacity: 0.5!important;transition:.25s all}div.bilibili-player-video-control:hover{opacity:0.9!important}`;
@@ -613,9 +614,10 @@ function togglePlayPause() { //onclick playpause button
         // videoPlayer.isPaused() ? videoPlayer.play() : videoPlayer.pause()
     }
 }
-document.querySelector('#playpause').addEventListener('click', function() {
+'#playpause'.assignClick(function() {
     togglePlayPause();
 })
+
 '#openfile-sub'.assignClick(()=>{
     modal.open('openfile')
 })
