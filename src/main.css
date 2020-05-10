@@ -306,6 +306,9 @@
             border-radius: 3px;
             border: 1px rgba(255, 255, 255, 0.116) solid;
             z-index: 20;
+            transition: transform .15s;
+            transform-origin: bottom right;
+            transform: scale(0);
         }
         operation>interaction{
             margin-top: 0;
@@ -313,12 +316,20 @@
             padding: 10px 16px;
             background-color: transparent;
             border-radius: inherit;
+            opacity: 0;
+            transition: .15s opacity;
         }
         operation>interaction:hover{
             background-color: rgba(255,255,255,0.1);
         }
         operation>interaction:last-child{
             margin-bottom: 0;
+        }
+        context.isopen>operation{
+            transform: scale(1);
+        }
+        context.isopen>operation>interaction{
+            opacity: 1;
         }
 
         .timecontrols,
@@ -703,6 +714,7 @@
             operation{
                 top: 100%;
                 bottom: inherit;
+                transform-origin: top right;
             }
             div.left {
                 width: 100%;
@@ -887,9 +899,9 @@
                 transform-origin: top right;
             }
 
-            #settings-btn {
+            /* #settings-btn {
                 display: none;
-            }
+            } */
 
             #playpause {
                 display: flex !important;
@@ -913,6 +925,7 @@
             operation {
                 top: 100%;
                 bottom: inherit;
+                transform-origin: top right;
             }
             .timecontrols {
                 display: none !important;

@@ -143,13 +143,23 @@ if (settings.usingNW) {
 document.querySelector('video').src = "";
 var textareaItem = document.querySelector('textarea');
 var frameCount = 0;
+
+String.prototype.assignClick = function (func) {
+  var a = document.querySelector(this);
+
+  a.onclick = function (event) {
+    func();
+  };
+};
+
 var gui = {
   el: {
     left: document.querySelector('.left'),
     right: document.querySelector('.right')
   },
+  mode: '',
   updateRightHeight: function updateRightHeight() {
-    if (window.innerWidth <= 1024) {
+    if (window.matchMedia("(orientation: portrait)").matches == true) {
       var leftComp = window.getComputedStyle(document.querySelector('.left'));
       var leftHeight = parseInt(leftComp.getPropertyValue('height'));
       document.querySelector('.right').style.height = window.innerHeight - leftHeight - 5 + 'px';
@@ -163,7 +173,7 @@ var gui = {
     document.querySelector(query).innerHTML = "<i class=\"ms-Icon ms-Icon--".concat(iconName, "\" aria-hidden=\"true\"></i>").concat(extraLabel ? "<iconlabel".concat(important ? ' class="important"' : '', ">").concat(extraLabel, "</iconlabel>") : '');
   },
   toggleContextMenu: function toggleContextMenu() {
-    document.querySelector('#more-options').classList.toggle('hidden');
+    // document.querySelector('#more-options').classList.toggle('hidden')
     document.querySelector('#more-options').parentElement.classList.toggle('isopen');
   },
   windowIsOnTop: false,
@@ -183,7 +193,7 @@ var gui = {
           gui.setInnerIcon('#fullscreen', 'FullScreen', '全屏 (f)', true); // document.querySelector('#fullscreen').innerHTML = "全屏"
         }
       } else {
-        if (document.fullscreenElement) {
+        if (document.fullscreenElement || document.msFullscreenElement) {
           if (document.exitFullscreen) {
             document.exitFullscreen();
           } else if (document.mozCancelFullScreen) {
@@ -216,23 +226,35 @@ var gui = {
         gui.setInnerIcon('#fullscreen', 'FullScreen', '全屏 (f)', true); // document.querySelector('#fullscreen').innerHTML = "全屏"
       }
     }
+  },
+  loadIndicator: {
+    show: function show() {
+      if (!settings.isIE) {
+        document.querySelector('#iframe-loading').classList.remove('hidden');
+        setTimeout(function () {
+          document.querySelector('#iframe-loading').classList.remove('transparent');
+        }, 50);
+      }
+    },
+    hide: function hide() {
+      document.querySelector('#iframe-loading').classList.add('transparent');
+      setTimeout(function () {
+        document.querySelector('#iframe-loading').classList.replace('transparent', 'hidden');
+      }, 1050);
+    }
   }
 };
 window.onresize = gui.updateRightHeight();
-
-document.querySelector('#fullscreen').onclick = function () {
+'#fullscreen'.assignClick(function () {
   return gui.fullscreen.toggle();
-};
-
-document.querySelector('#context-toggle').onclick = function () {
+});
+'#context-toggle'.assignClick(function () {
   return gui.toggleContextMenu();
-};
-
-document.querySelector('#winontop').onclick = function () {
+});
+'#winontop'.assignClick(function () {
   gui.toggleOnTop();
-};
-
-document.querySelector('#refresh').onclick = function () {
+});
+'#refresh'.assignClick(function () {
   var tempElement = document.createElement('div');
   tempElement.id = 'load-cover';
   tempElement.style.opacity = 0;
@@ -244,8 +266,7 @@ document.querySelector('#refresh').onclick = function () {
       location.reload();
     }, 250);
   }, 100);
-};
-
+});
 document.querySelectorAll('context>operation>interaction').forEach(function (item) {
   item.addEventListener('click', function () {
     gui.toggleContextMenu();
@@ -408,10 +429,12 @@ openFile.el.filePicker.onchange = function () {
   openFile.open.local();
 };
 
-document.querySelector('#URLpaste').onclick = function (event) {
+'#URLpaste'.assignClick(function (event) {
   return openFile.gui.pasteContent(event);
-};
-
+});
+'#URLopen'.assignClick(function () {
+  return onSubmitVideoURL();
+});
 var shortcut = {
   list: new Map(),
   count: 0,
@@ -491,6 +514,13 @@ var shortcut = {
       notes.setActive();
     }
   });
+
+  if (settings.usingNW) {
+    shortcut.add('F11', function () {
+      gui.fullscreen.toggle();
+    });
+  }
+
   shortcut.apply();
 }
 
@@ -657,6 +687,7 @@ var webFrame = {
   load: function load() {
     var url = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
     var isOnlineStream = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    videoPlayer.unload();
     document.title = 'VideoNotes - Loading...';
     document.querySelector('video').classList.add('hidden');
 
@@ -669,27 +700,29 @@ var webFrame = {
     this.el.classList.remove('hidden');
     this.el.src = url;
     gui.el.left.classList.add('hasframe');
-    document.querySelector('#iframe-loading').classList.remove('hidden');
+    gui.loadIndicator.show();
   },
   unload: function unload() {
     gui.el.left.classList.remove('hasframe');
     gui.el.left.classList.remove('bilibili');
+    gui.loadIndicator.hide();
     this.el.classList.add('hidden');
     this.el.src = "";
   }
 };
 
 webFrame.el.contentWindow.onbeforeunload = function () {
-  document.querySelector('#iframe-loading').classList.remove('hidden');
-  document.querySelector('#iframe-loading').classList.remove('transparent');
+  gui.loadIndicator.show();
 };
 
 webFrame.el.onload = function () {
   document.title = 'VideoNotes - ' + webFrame.el.contentWindow.document.title;
-  document.querySelector('#iframe-loading').classList.add('transparent');
-  setTimeout(function () {
-    document.querySelector('#iframe-loading').classList.replace('transparent', 'hidden');
-  }, 1050);
+
+  if (gui.mode == 'bilibili' && settings.usingNW) {
+    var insertedStyle = webFrame.el.contentDocument.createElement('style');
+    insertedStyle.innerHTML = ".bilibili-player .bilibili-player-area div.bilibili-player-video-control{background: black;border-color: black;opacity: 0.8}.bilibili-player-video-recommend-container, .bilibili-player-video-recommend,.bilibili-player-video-jump-to-bilibili-detail-bar,.bilibili-player-video-sendjumbar,.bilibili-player-video-pause-panel-container-qrcode,.bilibili-player-video-suspension-bar-btn-group-jumpbtn{\tdisplay: none !important;}.bilibili-player .bilibili-player-area .bilibili-player-video-control .bilibili-player-video-progress-bar{opacity: 0.6}.bilibili-player-video-sendjumpbar{display:none}div.bilibili-player-video-control{opacity: 0.5!important;transition:.25s all}div.bilibili-player-video-control:hover{opacity:0.9!important}";
+    webFrame.el.contentDocument.documentElement.appendChild(insertedStyle);
+  }
 };
 
 webFrame.el.contentWindow.onerror = function () {
@@ -704,6 +737,7 @@ function onSubmitVideoURL() {
     var res = videoUrlParser(inputURL);
     document.querySelector('#file-info').innerHTML = '⏳ 正在处理链接并加载中...';
     openFile.el.textBox.disabled = true;
+    gui.mode = res.mode;
     document.querySelector('#file-info').classList.toggle('hidden');
 
     if (!res.error) {
@@ -738,6 +772,9 @@ function togglePlayPause() {
 
 document.querySelector('#playpause').addEventListener('click', function () {
   togglePlayPause();
+});
+'#openfile-sub'.assignClick(function () {
+  modal.open('openfile');
 });
 var videoPlayer = {
   el: document.querySelector('video'),
@@ -778,6 +815,7 @@ var videoPlayer = {
     this.el.src = url;
     this.inError = false;
     document.querySelector('#time-edt').classList.remove('nodisplay');
+    gui.loadIndicator.hide();
 
     if (overrideTitle) {
       document.title = 'VideoNotes - ' + overrideTitle;
@@ -804,6 +842,18 @@ var videoPlayer = {
     };
 
     this.el.play();
+    document.querySelector('#openfile-sub').classList.remove('hidden');
+  },
+  unload: function unload() {
+    this.el.onplay = null;
+    this.el.onpause = null;
+    this.el.onerror = null;
+    this.el.pause();
+    this.inError = false;
+    this.isAvailable = false;
+    this.el.src = "";
+    document.querySelector('#time-edt').classList.add('nodisplay');
+    document.querySelector('#openfile-sub').classList.add('hidden');
   },
   jump: function jump() {
     var pausedbef = this.isPaused();
@@ -827,6 +877,15 @@ var videoPlayer = {
     this.el.currentTime += time;
   }
 };
+'#player-rev'.assignClick(function () {
+  videoPlayer.seek(-5);
+});
+'#player-forw'.assignClick(function () {
+  videoPlayer.seek(5);
+});
+'#player-jump'.assignClick(function () {
+  videoPlayer.jump();
+});
 var modal = {
   basezindex: 10000,
   elementList: function elementList() {
@@ -840,6 +899,12 @@ var modal = {
         document.querySelector('#info h1').innerHTML = title;
         document.querySelector('#info p').innerHTML = html;
         modal.open('info');
+      }
+    },
+    openfile: {
+      id: 'openfile',
+      onOpen: function onOpen() {
+        openFile.el.textBox.select();
       }
     }
   },
@@ -859,6 +924,8 @@ var modal = {
     }
   },
   open: function open() {
+    var _this5 = this;
+
     var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
     if (target != null) {
@@ -872,6 +939,11 @@ var modal = {
 
       setTimeout(function () {
         theElement.classList.remove('fadeout');
+        var modelInf = _this5.custom[target];
+
+        if (modelInf != undefined && modelInf.onOpen != undefined) {
+          modelInf.onOpen();
+        }
       }, 10);
     }
   },
@@ -895,23 +967,23 @@ var modal = {
     }
   },
   init: function init() {
-    var _this5 = this;
+    var _this6 = this;
 
     document.querySelectorAll('.close-button').forEach(function (item) {
       item.onclick = function (event) {
-        _this5.close(item.parentElement.parentElement.id);
+        _this6.close(item.parentElement.parentElement.id);
       };
     });
     document.querySelectorAll('modal').forEach(function (item) {
       item.onclick = function (event) {
         if (event.target.tagName == 'MODAL') {
-          _this5.close(item.id);
+          _this6.close(item.id);
         }
       };
     });
     document.querySelectorAll('[data-modal]').forEach(function (item) {
       item.onclick = function (event) {
-        _this5.open(item.getAttribute('data-modal'));
+        _this6.open(item.getAttribute('data-modal'));
       };
     });
   }
@@ -928,8 +1000,6 @@ if (navigator.userAgent.indexOf('Firefox') == -1) {
 setTimeout(function () {
   if (shortcut.count <= 1) {
     modal.open('openfile'); // modal.open('settings')
-
-    openFile.el.textBox.select();
   }
 
   if (!DEBUGMODE.devAction) {

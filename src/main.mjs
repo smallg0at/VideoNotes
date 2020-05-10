@@ -4,7 +4,7 @@ document.querySelector('video').src = "";
 var textareaItem = document.querySelector('textarea');
 var frameCount = 0;
 
-import{
+import {
     settings,
     DEBUGMODE,
     settingUtils,
@@ -12,6 +12,12 @@ import{
     nwClip
 } from './settings.mjs'
 
+String.prototype.assignClick = function(func) {
+    let a = document.querySelector(this);
+    a.onclick = function(event) {
+        func()
+    }
+}
 
 
 var gui = {
@@ -19,8 +25,9 @@ var gui = {
         left: document.querySelector('.left'),
         right: document.querySelector('.right')
     },
+    mode: '',
     updateRightHeight: function() {
-        if (window.innerWidth <= 1024) {
+        if (window.matchMedia("(orientation: portrait)").matches == true) {
             let leftComp = window.getComputedStyle(document.querySelector('.left'))
             let leftHeight = parseInt(leftComp.getPropertyValue('height'))
             document.querySelector('.right').style.height = (window.innerHeight - leftHeight - 5) + 'px'
@@ -32,7 +39,7 @@ var gui = {
         document.querySelector(query).innerHTML = `<i class="ms-Icon ms-Icon--${iconName}" aria-hidden="true"></i>${(extraLabel ? `<iconlabel${(important ? ' class="important"' : '')}>${extraLabel}</iconlabel>` : '')}`
     },
     toggleContextMenu: function() {
-        document.querySelector('#more-options').classList.toggle('hidden')
+        // document.querySelector('#more-options').classList.toggle('hidden')
         document.querySelector('#more-options').parentElement.classList.toggle('isopen')
     },
     windowIsOnTop: false,
@@ -53,7 +60,7 @@ var gui = {
                     // document.querySelector('#fullscreen').innerHTML = "全屏"
                 }
             } else {
-                if (document.fullscreenElement) {
+                if (document.fullscreenElement||document.msFullscreenElement) {
                     if (document.exitFullscreen) {
                         document.exitFullscreen();
                     } else if (document.mozCancelFullScreen) {
@@ -85,33 +92,51 @@ var gui = {
                 gui.setInnerIcon('#fullscreen', 'FullScreen', '全屏 (f)', true)
                 // document.querySelector('#fullscreen').innerHTML = "全屏"
             }
+        },
+    },
+    loadIndicator: {
+        show: function() {
+            if (!settings.isIE) {
+                document.querySelector('#iframe-loading').classList.remove('hidden')
+                setTimeout(() => {
+                    document.querySelector('#iframe-loading').classList.remove('transparent')
+                }, 50)
+            }
+        },
+        hide: function() {
+            document.querySelector('#iframe-loading').classList.add('transparent')
+            setTimeout(() => {
+                document.querySelector('#iframe-loading').classList.replace('transparent', 'hidden')
+            }, 1050)
         }
     }
 }
 window.onresize = gui.updateRightHeight()
-document.querySelector('#fullscreen').onclick = ()=> gui.fullscreen.toggle()
-document.querySelector('#context-toggle').onclick = ()=>gui.toggleContextMenu()
-document.querySelector('#winontop').onclick = ()=>{gui.toggleOnTop()}
-document.querySelector('#refresh').onclick = () => {
+'#fullscreen'.assignClick(() => gui.fullscreen.toggle())
+'#context-toggle'.assignClick(() => gui.toggleContextMenu())
+'#winontop'.assignClick(() => {
+    gui.toggleOnTop()
+})
+'#refresh'.assignClick(() => {
     let tempElement = document.createElement('div')
     tempElement.id = 'load-cover'
     tempElement.style.opacity = 0
     document.documentElement.appendChild(tempElement)
-    setTimeout(()=>{
+    setTimeout(() => {
         tempElement.style.opacity = 1
         setTimeout(() => {
             tempElement.style.opacity = 1
             location.reload()
         }, 250)
-    },100)
-}
-document.querySelectorAll('context>operation>interaction').forEach(item=>{
-    item.addEventListener('click', ()=>{
+    }, 100)
+})
+document.querySelectorAll('context>operation>interaction').forEach(item => {
+    item.addEventListener('click', () => {
         gui.toggleContextMenu()
     })
 })
 gui.updateRightHeight()
-if(!settings.usingNW){
+if (!settings.usingNW) {
     document.querySelector('#winontop').classList.add('hidden')
 }
 document.addEventListener('fullscreenchange', () => {
@@ -180,17 +205,17 @@ var openFile = {
                 if (navigator.clipboard.readText) {
                     this.pasteNew()
                 } else {
-                        document.querySelector('#URLtextbox').select()
-                        document.execCommand('paste')
-                        setTimeout(() => {
-                            if (document.querySelector('#URLtextbox').value == "") {
-                                modal.custom.info.render(
-                                    `您的浏览器不支持自动粘贴，请手动粘贴。`,
-                                    `提示`
-                                )
-                                document.querySelector('#URLpaste').classList.add('hidden')
-                            }
-                        }, 50);
+                    document.querySelector('#URLtextbox').select()
+                    document.execCommand('paste')
+                    setTimeout(() => {
+                        if (document.querySelector('#URLtextbox').value == "") {
+                            modal.custom.info.render(
+                                `您的浏览器不支持自动粘贴，请手动粘贴。`,
+                                `提示`
+                            )
+                            document.querySelector('#URLpaste').classList.add('hidden')
+                        }
+                    }, 50);
                 }
             }
             document.querySelector('#URLtextbox').select()
@@ -205,7 +230,7 @@ var openFile = {
                     document.querySelector('#URLpaste').classList.add('hidden')
                     console.info('CLIPBOARD Denied', err)
                 });
-                //》
+            //》
         }
 
     },
@@ -254,7 +279,8 @@ openFile.el.filePicker.onchange = () => {
     openFile.open.local()
 }
 
-document.querySelector('#URLpaste').onclick = (event) => openFile.gui.pasteContent(event)
+'#URLpaste'.assignClick((event) => openFile.gui.pasteContent(event))
+'#URLopen'.assignClick(() => onSubmitVideoURL())
 
 var shortcut = {
     list: new Map(),
@@ -328,6 +354,11 @@ var shortcut = {
             notes.setActive()
         }
     })
+    if (settings.usingNW) {
+        shortcut.add('F11', () => {
+            gui.fullscreen.toggle()
+        })
+    }
 
     shortcut.apply()
 }
@@ -485,6 +516,7 @@ var webFrame = {
     },
     el: document.querySelector('iframe'),
     load: function(url = '', isOnlineStream = false) {
+        videoPlayer.unload()
         document.title = 'VideoNotes - Loading...'
         document.querySelector('video').classList.add('hidden')
         if (isOnlineStream) {
@@ -495,25 +527,27 @@ var webFrame = {
         this.el.classList.remove('hidden')
         this.el.src = url
         gui.el.left.classList.add('hasframe')
-        document.querySelector('#iframe-loading').classList.remove('hidden')
+        gui.loadIndicator.show()
     },
     unload: function() {
         gui.el.left.classList.remove('hasframe')
         gui.el.left.classList.remove('bilibili')
+        gui.loadIndicator.hide()
         this.el.classList.add('hidden')
         this.el.src = ""
     }
 }
 webFrame.el.contentWindow.onbeforeunload = () => {
-    document.querySelector('#iframe-loading').classList.remove('hidden')
-    document.querySelector('#iframe-loading').classList.remove('transparent')
+    gui.loadIndicator.show()
 }
 webFrame.el.onload = function() {
     document.title = 'VideoNotes - ' + webFrame.el.contentWindow.document.title
-    document.querySelector('#iframe-loading').classList.add('transparent')
-    setTimeout(() => {
-        document.querySelector('#iframe-loading').classList.replace('transparent', 'hidden')
-    }, 1050)
+    if (gui.mode == 'bilibili' && settings.usingNW) {
+        let insertedStyle = webFrame.el.contentDocument.createElement('style')
+        insertedStyle.innerHTML = `.bilibili-player .bilibili-player-area div.bilibili-player-video-control{background: black;border-color: black;opacity: 0.8}.bilibili-player-video-recommend-container, .bilibili-player-video-recommend,.bilibili-player-video-jump-to-bilibili-detail-bar,.bilibili-player-video-sendjumbar,.bilibili-player-video-pause-panel-container-qrcode,.bilibili-player-video-suspension-bar-btn-group-jumpbtn{	display: none !important;}.bilibili-player .bilibili-player-area .bilibili-player-video-control .bilibili-player-video-progress-bar{opacity: 0.6}.bilibili-player-video-sendjumpbar{display:none}div.bilibili-player-video-control{opacity: 0.5!important;transition:.25s all}div.bilibili-player-video-control:hover{opacity:0.9!important}`;
+        webFrame.el.contentDocument.documentElement.appendChild(insertedStyle)
+    }
+
 }
 webFrame.el.contentWindow.onerror = function() {
     alert('加载页面内容时出现了点问题，请稍后再试。')
@@ -526,6 +560,7 @@ function onSubmitVideoURL() {
         let res = videoUrlParser(inputURL)
         document.querySelector('#file-info').innerHTML = '⏳ 正在处理链接并加载中...'
         openFile.el.textBox.disabled = true
+        gui.mode = res.mode
         document.querySelector('#file-info').classList.toggle('hidden')
         if (!res.error) {
             setTimeout(() => {
@@ -549,9 +584,9 @@ function togglePlayPause() { //onclick playpause button
     if (window.location.href.indexOf(videoPlayer.el.src) != -1 || videoPlayer.inError) {
         modal.open('openfile')
     } else {
-        if(videoPlayer.isPaused()){
+        if (videoPlayer.isPaused()) {
             videoPlayer.play()
-        }else{
+        } else {
             videoPlayer.pause()
         }
         // videoPlayer.isPaused() ? videoPlayer.play() : videoPlayer.pause()
@@ -559,6 +594,9 @@ function togglePlayPause() { //onclick playpause button
 }
 document.querySelector('#playpause').addEventListener('click', function() {
     togglePlayPause();
+})
+'#openfile-sub'.assignClick(()=>{
+    modal.open('openfile')
 })
 
 var videoPlayer = {
@@ -597,6 +635,7 @@ var videoPlayer = {
         this.el.src = url
         this.inError = false
         document.querySelector('#time-edt').classList.remove('nodisplay')
+        gui.loadIndicator.hide()
         if (overrideTitle) {
             document.title = 'VideoNotes - ' + overrideTitle
         } else {
@@ -619,6 +658,19 @@ var videoPlayer = {
             // label.innerHTML = '重放'
         }
         this.el.play()
+        document.querySelector('#openfile-sub').classList.remove('hidden')
+
+    },
+    unload: function(){
+        this.el.onplay = null
+        this.el.onpause = null
+        this.el.onerror = null
+        this.el.pause()
+        this.inError = false
+        this.isAvailable = false
+        this.el.src = ""
+        document.querySelector('#time-edt').classList.add('nodisplay')
+        document.querySelector('#openfile-sub').classList.add('hidden')
     },
     jump: function() {
         let pausedbef = this.isPaused()
@@ -628,7 +680,7 @@ var videoPlayer = {
             if (!pausedbef) {
                 this.play()
             }
-        }  else {
+        } else {
             let destTime = parseInt(destTimeString)
             console.log(destTime)
             if (!isNaN(destTime)) {
@@ -640,6 +692,16 @@ var videoPlayer = {
         this.el.currentTime += time
     }
 }
+
+'#player-rev'.assignClick(()=>{
+    videoPlayer.seek(-5)
+})
+'#player-forw'.assignClick(() => {
+    videoPlayer.seek(5)
+})
+'#player-jump'.assignClick(() => {
+    videoPlayer.jump()
+})
 
 var modal = {
     basezindex: 10000,
@@ -653,6 +715,12 @@ var modal = {
                 document.querySelector('#info h1').innerHTML = title
                 document.querySelector('#info p').innerHTML = html
                 modal.open('info')
+            }
+        },
+        openfile: {
+            id: 'openfile',
+            onOpen: function(){
+                openFile.el.textBox.select()
             }
         }
     },
@@ -673,11 +741,15 @@ var modal = {
             let theElement = document.querySelector('modal#' + target)
             theElement.style.zIndex = this.basezindex++;
             theElement.classList.remove('hidden')
-            if(settings.isIE){
+            if (settings.isIE) {
                 theElement.style.position = "relative"
             }
             setTimeout(() => {
                 theElement.classList.remove('fadeout')
+                let modelInf = this.custom[target]
+                if(modelInf != undefined && modelInf.onOpen != undefined){
+                    modelInf.onOpen()
+                }
             }, 10)
         }
     },
@@ -728,9 +800,9 @@ setTimeout(() => {
     if (shortcut.count <= 1) {
         modal.open('openfile')
         // modal.open('settings')
-        openFile.el.textBox.select()
+
     }
-    if(!DEBUGMODE.devAction){
+    if (!DEBUGMODE.devAction) {
         document.querySelector('#load-cover').parentElement.removeChild(document.querySelector('#load-cover'))
     }
 }, 1000);
