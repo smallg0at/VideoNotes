@@ -7,12 +7,13 @@ var stra = fs.readFileSync('./src/settings.mjs', {
 var strb = fs.readFileSync('./src/main.mjs', {
     encoding: 'utf-8'
 })
+console.groupCollapsed('Concat and replace strings...')
 let a = stra.indexOf('export')
 for (let i = a; i < stra.length; i++) {
     const element = stra[i];
     if(element == '}'){
         let k = stra.substring(a,i+1)
-        console.log(a,i)
+        console.log('EXPORT',a,i)
         stra = stra.replace(k,"")
         break;
     }
@@ -22,7 +23,7 @@ for (let i = b; i < strb.length; i++) {
     const element = strb[i];
     if (element == '}') {
         let k = strb.substring(b, i + 1)
-        console.log(b, i)
+        console.log('EXPORT',b, i)
         strb = strb.replace(k, "")
         break;
     }
@@ -36,7 +37,7 @@ for (let i = b; i < strb.length; i++) {
     }
     if (element == '}' && flag) {
         let k = strb.substring(b-1, i + 1)
-        console.log(b, i)
+        console.log('PASTENEW',b, i)
         strb = strb.replace(k, "")
         break;
     }
@@ -46,15 +47,17 @@ strb = strb.replace(`from './settings.mjs'`,"")
 strb = strb.replace('this.pasteNew()','')
 var c = stra + strb
 fs.writeFileSync('./main-c1.js',c)
+console.groupEnd()
 
 const childProcess = require("child_process")
 
+console.log("Compiling with Babel...")
 childProcess.exec('npx babel ./main-c1.js --out-file ./src/main-comp.js',(error, stdout, stderr) => {
     if (error) {
-        console.error(`exec error: ${error}`);
+        console.error(`We have encountered an error while compiling:\n${error}`);
         return;
     }
-    console.log(`stdout: ${stdout}`);
-    console.error(`stderr: ${stderr}`);
+    console.log('Done, removing main-c1.js.')
+    fs.unlinkSync('./main-c1.js')
 })
 // npx babel script.js --out-file script-compiled.js
