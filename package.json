@@ -56,6 +56,7 @@
     "nwjs-builder-phoenix": "^1.15.0"
   },
   "dependencies": {
-    "babel-plugin-loop-optimizer": "^1.4.1"
+    "babel-plugin-loop-optimizer": "^1.4.1",
+    "localforage": "^1.7.3"
   }
 }
