@@ -41,9 +41,20 @@
 
 <body>
     <div id="load-cover">
-        <img src="./res/VideoNotesLQ.png" alt="" width="128" height="128">
-        <h1 style="font-size: 60px;font-weight: normal;margin: 0;">VideoNotes</h1>
-        <p id="load-text">加载中...</p>
+        <!-- <img src="./res/VideoNotesLQ.png" alt="" width="128" height="128">
+        <h1 style="font-size: 60px;font-weight: normal;margin: 0;">VideoNotes</h1> -->
+        <p id="load-text">
+            <svg xmlns="http://www.w3.org/2000/svg" style="animation: spinning 3s linear infinite;" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9b9b9b" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="round">
+                <line x1="12" y1="2" x2="12" y2="6"></line>
+                <line x1="12" y1="18" x2="12" y2="22"></line>
+                <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+                <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+                <line x1="2" y1="12" x2="6" y2="12"></line>
+                <line x1="18" y1="12" x2="22" y2="12"></line>
+                <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+                <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+            </svg>
+        </p>
     </div>
     <div class="left">
         <video src="about:blank"></video>
@@ -53,7 +64,11 @@
                 <iconlabel class="important">您的浏览器不支持 iframe。<br>本功能将无法正常工作。<br>是时候换个好一点的浏览器了！</iconlabel>
             </div>
         </iframe>
-        <div id="iframe-loading" class="hidden"><i class="ms-Icon ms-Icon--WebAppBuilderModule spinning" style="font-size: 45px;" aria-hidden="true"></i></div>
+        <div id="iframe-loading" class="hidden">
+            <!-- <i class="ms-Icon ms-Icon--WebAppBuilderModule spinning" style="font-size: 45px;" aria-hidden="true"></i> -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="spinning" width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="grey" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="round">
+                <path d="M12 2l9 4.9V17L12 22l-9-4.9V7z" /> </svg>
+        </div>
         <div class="media-playback-percentage">
             <div id="play-length"></div>
             <div class="media-playback-timing"></div>
@@ -72,7 +87,7 @@
         </noscript>
         <div class="error fix hidden" id="ie-warning" style="opacity: .6;">
             <i class="ms-Icon ms-Icon--Warning" aria-hidden="true"></i>
-            <iconlabel class="important">本网页对于 Internet Explorer 的支持不佳，不一定能正常工作。<br>建议更换 Chromium 内核的浏览器。</iconlabel>
+            <iconlabel class="important">本网页对于 Internet Explorer 的支持不佳，不一定能正常工作。</iconlabel>
         </div>
 
         <div>
@@ -126,7 +141,7 @@
                 <div id="open-network-url">
                     <input type="text" placeholder="输入视频网站链接 / 视频 URL / 以'||'为开头的页面地址" id="URLtextbox"></input>
                     <button id="URLpaste" title="粘贴"><i class="ms-Icon ms-Icon--Paste" aria-hidden="true" single></i></button>
-                    <button id="URLopen" title="打开" ><i class="ms-Icon ms-Icon--Forward" aria-hidden="true" single></i></button>
+                    <button id="URLopen" title="打开"><i class="ms-Icon ms-Icon--Forward" aria-hidden="true" single></i></button>
                     <label for="openlf" class="input-file-alternative no-custom"><i class="ms-Icon ms-Icon--OpenFolderHorizontal" aria-hidden="true"></i><span style="vertical-align: center;">本地选取文件</span></label>
                     <!-- <input type="button" value='<i class= ms-Icon ms-Icon--OpenFile' aria-hidden='true'\>\<\/i\>打开" id="URLopen"></input> -->
                 </div>
@@ -210,7 +225,7 @@
 <link rel="stylesheet" href="./src/main.css">
 <script id="flag"></script>
 <script id="compat">
-    function removeCover(){
+    function removeCover() {
         document.querySelector('#load-cover').parentElement.removeChild(document.querySelector('#load-cover'))
     }
     if (navigator.userAgent.indexOf('Trident') != -1 && navigator.userAgent.indexOf('Edge') == -1) {
@@ -227,7 +242,7 @@
         altScript.type = 'text/javascript'
         document.documentElement.appendChild(altScript)
         document.documentElement.classList.add('is-ie')
-        document.querySelector('#playpause').setAttribute('onclick','togglePlayPause()')
+        document.querySelector('#playpause').setAttribute('onclick', 'togglePlayPause()')
 
         // document.insertBefore(altScript, document.querySelector('#flag'))
         console.log('ES6 Compat!')

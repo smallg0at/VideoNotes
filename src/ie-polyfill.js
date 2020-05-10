@@ -34,3 +34,12 @@ NodeList.prototype.forEach = function(callback){
         callback(objList.item(index), index)
     }
 }
+
+DOMTokenList.prototype.replace = function(replaced, newClass){
+    if (this == null) {
+        throw TypeError
+    }
+    var element = this
+    element.remove(replaced)
+    element.add(newClass)
+}

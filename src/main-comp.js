@@ -6,7 +6,8 @@ var DEBUGMODE = {
   keypress: false,
   inspectGeneratedURL: false,
   setting: false,
-  devAction: false
+  devAction: false,
+  quickRefresh: false
 };
 var settings = {
   isIE: false,
@@ -358,8 +359,6 @@ var openFile = {
   },
   gui: {
     pasteContent: function pasteContent(e) {
-      e.preventDefault();
-
       if (settings.usingNW) {
         document.querySelector('#URLtextbox').value = nwClip.get();
       } else {
@@ -444,7 +443,7 @@ var shortcut = {
     alt: false
   },
   add: function add(key, func) {
-    return this.list.set(key, func);
+    return this.list.set(key.toLocaleLowerCase(), func);
   },
   check: function check(key) {
     return this.list.has(key);
@@ -465,8 +464,24 @@ var shortcut = {
         a(event);
       }
 
-      if (_this2.list.has(event.key)) {
-        var _a = _this2.list.get(event.key);
+      var composedKey = event.key;
+
+      if (event.altKey) {
+        composedKey = 'alt+' + composedKey;
+      }
+
+      if (event.shiftKey) {
+        composedKey = 'shift+' + composedKey;
+      }
+
+      if (event.ctrlKey) {
+        composedKey = 'ctrl+' + composedKey;
+      }
+
+      composedKey = composedKey.toLocaleLowerCase();
+
+      if (_this2.list.has(composedKey)) {
+        var _a = _this2.list.get(composedKey);
 
         _a(event);
       }
@@ -514,6 +529,17 @@ var shortcut = {
       notes.setActive();
     }
   });
+  shortcut.add('Tab', function (event) {
+    if (event.target.tagName != 'TEXTAREA' && event.target.tagName != 'INPUT') {
+      document.querySelector('textarea').select();
+    }
+  });
+
+  if (DEBUGMODE.quickRefresh) {
+    shortcut.add('ctrl+r', function (event) {
+      location.reload();
+    });
+  }
 
   if (settings.usingNW) {
     shortcut.add('F11', function () {
@@ -717,6 +743,7 @@ webFrame.el.contentWindow.onbeforeunload = function () {
 
 webFrame.el.onload = function () {
   document.title = 'VideoNotes - ' + webFrame.el.contentWindow.document.title;
+  gui.loadIndicator.hide();
 
   if (gui.mode == 'bilibili' && settings.usingNW) {
     var insertedStyle = webFrame.el.contentDocument.createElement('style');
@@ -770,7 +797,7 @@ function togglePlayPause() {
   }
 }
 
-document.querySelector('#playpause').addEventListener('click', function () {
+'#playpause'.assignClick(function () {
   togglePlayPause();
 });
 '#openfile-sub'.assignClick(function () {
@@ -858,14 +885,28 @@ var videoPlayer = {
   jump: function jump() {
     var pausedbef = this.isPaused();
     this.pause();
-    var destTimeString = prompt('请输入目标秒数');
+    var destTimeString = prompt('请输入目标时间（如 5:26）');
 
     if (destTimeString === null || destTimeString == "") {
       if (!pausedbef) {
         this.play();
       }
     } else {
-      var destTime = parseInt(destTimeString);
+      destTimeString = destTimeString.trim();
+      destTimeString = destTimeString.replace('：', ':');
+      var destTimeArr = destTimeString.split(':');
+      console.log(destTimeArr);
+      var destTime = 0;
+      var destLevel = -1;
+      console.groupCollapsed('destTimeParse');
+
+      for (var i = destTimeArr.length - 1; i >= 0; i--) {
+        destLevel++;
+        destTime += parseInt(destTimeArr[i]) * Math.pow(60, destLevel);
+        console.log(parseInt(destTimeArr[i]) * Math.pow(60, destLevel));
+      }
+
+      console.groupEnd();
       console.log(destTime);
 
       if (!isNaN(destTime)) {
