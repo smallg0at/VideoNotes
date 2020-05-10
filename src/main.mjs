@@ -696,13 +696,25 @@ var videoPlayer = {
     jump: function() {
         let pausedbef = this.isPaused()
         this.pause()
-        let destTimeString = prompt('请输入目标秒数')
+        let destTimeString = prompt('请输入目标时间（如 5:26）')
         if (destTimeString === null || destTimeString == "") {
             if (!pausedbef) {
                 this.play()
             }
         } else {
-            let destTime = parseInt(destTimeString)
+            destTimeString = destTimeString.trim()
+            destTimeString = destTimeString.replace('：',':')
+            let destTimeArr = destTimeString.split(':')
+            console.log(destTimeArr)
+            let destTime = 0
+            let destLevel = -1
+            console.groupCollapsed('destTimeParse')
+            for(let i = destTimeArr.length-1;i>=0;i--){
+                destLevel++
+                destTime += (parseInt(destTimeArr[i])*(60**destLevel))
+                console.log((parseInt(destTimeArr[i]) * (60 ** destLevel)))
+            }
+            console.groupEnd()
             console.log(destTime)
             if (!isNaN(destTime)) {
                 videoPlayer.el.currentTime = destTime
