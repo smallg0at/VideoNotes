@@ -186,6 +186,14 @@ var notes = {
     },
     onFinishLoad: function() {
         this.item().placeholder = '在这里记点笔记吧。' + (settings.localStorage ? '' : '\n\n您的浏览器暂不支持本地存储，因此您的文本在刷新时不会被保留！')
+    },
+    insertText: function(target, text){
+        target.focus()
+        if (typeof document.selection != "undefined") {
+            document.selection.createRange().text = text;
+        } else {
+            target.value = target.value.substr(0, target.selectionStart) +text + target.value.substring(target.selectionStart, target.length);
+        }
     }
 }
 notes.init()
@@ -379,6 +387,40 @@ var shortcut = {
             gui.fullscreen.toggle()
         })
     }
+    shortcut.add('ctrl+i',(event)=>{
+        if(event.target.tagName == 'TEXTAREA'){
+            let playbackTime = 0
+            if(videoPlayer.isAvailable){
+                playbackTime = videoPlayer.el.currentTime
+            }else if(false && settings.usingNW){//disabled
+                if(webFrame.isAvailable == true){
+                    try{
+                        let playbackTime = document.querySelector('iframe').contentWindow.document.querySelector('video').currentTime
+                        console.log(document.querySelector('iframe').contentWindow.document.querySelector('video'))
+                    }catch(e){
+                        modal.custom.info.render('当前网站暂时不支持插入时间。','错误')
+                        throw e
+                    }
+                }
+            }else{
+                return 0
+            }
+            console.log(playbackTime)
+            let playbackCounter = [0,0,0]
+            playbackCounter[2] = Math.floor(playbackTime%60)
+
+            playbackCounter[1] = Math.floor(playbackTime/60)
+            while(playbackCounter[1]>=60){
+                playbackCounter[1] -= 60
+                playbackCounter[0]++
+            }
+            let fnstr = ''
+            fnstr = (playbackCounter[0] > 0)?(playbackCounter[0])+':':''
+            fnstr = fnstr.concat((playbackCounter[0] > 0 && playbackCounter[1] < 10) ? '0' : '' + playbackCounter[1] + ':')
+            fnstr = fnstr.concat(((playbackCounter[2] >= 10) ? '' : '0') + playbackCounter[2])
+            notes.insertText(event.target, fnstr)
+        }
+    })
 
 
     shortcut.apply()
@@ -536,6 +578,7 @@ var webFrame = {
         this.el.src
     },
     el: document.querySelector('iframe'),
+    isAvailable: false,
     load: function(url = '', isOnlineStream = false) {
         videoPlayer.unload()
         document.title = 'VideoNotes - Loading...'
@@ -549,6 +592,7 @@ var webFrame = {
         this.el.src = url
         gui.el.left.classList.add('hasframe')
         gui.loadIndicator.show()
+        webFrame.isAvailable = true
     },
     unload: function() {
         gui.el.left.classList.remove('hasframe')
@@ -556,6 +600,7 @@ var webFrame = {
         gui.loadIndicator.hide()
         this.el.classList.add('hidden')
         this.el.src = ""
+        this.isAvailable = false
     }
 }
 webFrame.el.contentWindow.onbeforeunload = () => {
@@ -655,6 +700,7 @@ var videoPlayer = {
         this.el.classList.remove('hidden')
         gui.el.left.classList.remove('hasframe')
         gui.el.left.classList.remove('bilibili')
+        webFrame.unload()
         this.el.src = url
         this.inError = false
         document.querySelector('#time-edt').classList.remove('nodisplay')
