@@ -198,7 +198,6 @@ var openFile = {
     },
     gui: {
         pasteContent: function(e) {
-            e.preventDefault()
             if (settings.usingNW) {
                 document.querySelector('#URLtextbox').value = nwClip.get()
             } else {
@@ -291,7 +290,7 @@ var shortcut = {
         alt: false,
     },
     add: function(key, func) {
-        return this.list.set(key, func)
+        return this.list.set(key.toLocaleLowerCase(), func)
     },
     check: function(key) {
         return this.list.has(key)
@@ -306,8 +305,19 @@ var shortcut = {
                 let a = this.list.get('any')
                 a(event)
             }
-            if (this.list.has(event.key)) {
-                let a = this.list.get(event.key)
+            let composedKey = event.key
+            if(event.altKey){
+                composedKey = 'alt+'+composedKey
+            }
+            if(event.shiftKey){
+                composedKey = 'shift+'+composedKey
+            }
+            if(event.ctrlKey){
+                composedKey = 'ctrl+'+composedKey
+            }
+            composedKey = composedKey.toLocaleLowerCase()
+            if (this.list.has(composedKey)) {
+                let a = this.list.get(composedKey)
                 a(event)
             }
         }
@@ -354,11 +364,22 @@ var shortcut = {
             notes.setActive()
         }
     })
+    shortcut.add('Tab', (event)=>{
+        if (event.target.tagName != 'TEXTAREA' && event.target.tagName != 'INPUT') {
+            document.querySelector('textarea').select()
+        }
+    })
+    if(DEBUGMODE.quickRefresh){
+        shortcut.add('ctrl+r',(event)=>{
+            location.reload()
+        })
+    }
     if (settings.usingNW) {
         shortcut.add('F11', () => {
             gui.fullscreen.toggle()
         })
     }
+
 
     shortcut.apply()
 }

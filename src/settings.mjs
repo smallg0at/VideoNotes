@@ -5,7 +5,8 @@ const DEBUGMODE = {
     keypress: false,
     inspectGeneratedURL: false,
     setting: false,
-    devAction: false
+    devAction: false,
+    quickRefresh: false
 }
 
 var settings = {
