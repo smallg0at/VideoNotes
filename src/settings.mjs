@@ -6,7 +6,8 @@ const DEBUGMODE = {
     inspectGeneratedURL: false,
     setting: false,
     devAction: false,
-    quickRefresh: false
+    quickRefresh: false,
+    timefilterDebug: true
 }
 
 var settings = {

@@ -15,9 +15,13 @@ import {
 String.prototype.assignClick = function(func) {
     let a = document.querySelector(this);
     a.onclick = function(event) {
-        func()
+        func(event)
     }
 }
+
+'#reset-everything'.assignClick((event)=>{
+    settingUtils.reset()
+})
 
 
 var gui = {
@@ -287,7 +291,8 @@ openFile.el.filePicker.onchange = () => {
 }
 
 '#URLpaste'.assignClick((event) => openFile.gui.pasteContent(event))
-'#URLopen'.assignClick(() => onSubmitVideoURL())
+'#URLopen'.assignClick((event) => {onSubmitVideoURL(event.shiftKey)})
+
 
 var shortcut = {
     list: new Map(),
@@ -346,7 +351,12 @@ var shortcut = {
     })
     shortcut.add('Enter', (event) => {
         if (event.target.id == 'URLtextbox') {
-            onSubmitVideoURL()
+            onSubmitVideoURL(false)
+        }
+    })
+    shortcut.add('shift+Enter', (event) => {
+        if (event.target.id == 'URLtextbox') {
+            onSubmitVideoURL(true)
         }
     })
     shortcut.add('o', (event) => {
@@ -387,25 +397,36 @@ var shortcut = {
             gui.fullscreen.toggle()
         })
     }
+
     shortcut.add('ctrl+i',(event)=>{
         if(event.target.tagName == 'TEXTAREA'){
             let playbackTime = 0
             if(videoPlayer.isAvailable){
                 playbackTime = videoPlayer.el.currentTime
-            }else if(false && settings.usingNW){//disabled
+            }else if(settings.usingNW){//disabled
                 if(webFrame.isAvailable == true){
-                    try{
-                        let playbackTime = document.querySelector('iframe').contentWindow.document.querySelector('video').currentTime
-                        console.log(document.querySelector('iframe').contentWindow.document.querySelector('video'))
-                    }catch(e){
+                    let timeData = null
+                    let frame1 = document.querySelector('iframe').contentWindow
+                    if (frame1.document.querySelector('video')){
+                        timeData = frame1.document.querySelector('video').currentTime
+                    } else if (frame1.document.querySelector('iframe').contentWindow.document.querySelector('video')) {
+                        timeData = frame1.document.querySelector('iframe').contentWindow.document.querySelector('video').currentTime
+                    }
+                    if(DEBUGMODE.timefilterDebug){
+                        console.log('InsTime: Web:', timeData)
+                    }
+                    if(timeData){
+                        playbackTime = timeData
+                    }else{
                         modal.custom.info.render('当前网站暂时不支持插入时间。','错误')
-                        throw e
                     }
                 }
             }else{
                 return 0
             }
-            console.log(playbackTime)
+            if(DEBUGMODE.timefilterDebug){
+                console.log(playbackTime)
+            }
             let playbackCounter = [0,0,0]
             playbackCounter[2] = Math.floor(playbackTime%60)
 
@@ -621,9 +642,15 @@ webFrame.el.contentWindow.onerror = function() {
     self.onload()
 }
 
-function onSubmitVideoURL() {
+function onSubmitVideoURL(frame=false) {
     let inputURL = openFile.el.textBox.value
     if (inputURL) {
+        if(frame){
+            if(inputURL.indexOf('://')==-1){
+                inputURL = 'http://'+inputURL
+            }
+            inputURL = '||'+inputURL
+        }
         let res = videoUrlParser(inputURL)
         document.querySelector('#file-info').innerHTML = '⏳ 正在处理链接并加载中...'
         openFile.el.textBox.disabled = true
