@@ -11,7 +11,7 @@
     "start32": "run --x86 --mirror https://npm.taobao.org/mirrors/nwjs/ ."
   },
   "build": {
-    "nwVersion": "0.44.5",
+    "nwVersion": "0.44.6",
     "target": [
       "nsis7z"
     ],
