@@ -7,7 +7,8 @@ var DEBUGMODE = {
   inspectGeneratedURL: false,
   setting: false,
   devAction: false,
-  quickRefresh: false
+  quickRefresh: false,
+  timefilterDebug: true
 };
 var settings = {
   isIE: false,
@@ -149,10 +150,13 @@ String.prototype.assignClick = function (func) {
   var a = document.querySelector(this);
 
   a.onclick = function (event) {
-    func();
+    func(event);
   };
 };
 
+'#reset-everything'.assignClick(function (event) {
+  settingUtils.reset();
+});
 var gui = {
   el: {
     left: document.querySelector('.left'),
@@ -440,8 +444,8 @@ openFile.el.filePicker.onchange = function () {
 '#URLpaste'.assignClick(function (event) {
   return openFile.gui.pasteContent(event);
 });
-'#URLopen'.assignClick(function () {
-  return onSubmitVideoURL();
+'#URLopen'.assignClick(function (event) {
+  onSubmitVideoURL(event.shiftKey);
 });
 var shortcut = {
   list: new Map(),
@@ -512,7 +516,12 @@ var shortcut = {
   });
   shortcut.add('Enter', function (event) {
     if (event.target.id == 'URLtextbox') {
-      onSubmitVideoURL();
+      onSubmitVideoURL(false);
+    }
+  });
+  shortcut.add('shift+Enter', function (event) {
+    if (event.target.id == 'URLtextbox') {
+      onSubmitVideoURL(true);
     }
   });
   shortcut.add('o', function (event) {
@@ -562,22 +571,36 @@ var shortcut = {
 
       if (videoPlayer.isAvailable) {
         playbackTime = videoPlayer.el.currentTime;
-      } else if (false && settings.usingNW) {
+      } else if (settings.usingNW) {
         //disabled
         if (webFrame.isAvailable == true) {
-          try {
-            var _playbackTime = document.querySelector('iframe').contentWindow.document.querySelector('video').currentTime;
-            console.log(document.querySelector('iframe').contentWindow.document.querySelector('video'));
-          } catch (e) {
+          var timeData = null;
+          var frame1 = document.querySelector('iframe').contentWindow;
+
+          if (frame1.document.querySelector('video')) {
+            timeData = frame1.document.querySelector('video').currentTime;
+          } else if (frame1.document.querySelector('iframe').contentWindow.document.querySelector('video')) {
+            timeData = frame1.document.querySelector('iframe').contentWindow.document.querySelector('video').currentTime;
+          }
+
+          if (DEBUGMODE.timefilterDebug) {
+            console.log('InsTime: Web:', timeData);
+          }
+
+          if (timeData) {
+            playbackTime = timeData;
+          } else {
             modal.custom.info.render('当前网站暂时不支持插入时间。', '错误');
-            throw e;
           }
         }
       } else {
         return 0;
       }
 
-      console.log(playbackTime);
+      if (DEBUGMODE.timefilterDebug) {
+        console.log(playbackTime);
+      }
+
       var playbackCounter = [0, 0, 0];
       playbackCounter[2] = Math.floor(playbackTime % 60);
       playbackCounter[1] = Math.floor(playbackTime / 60);
@@ -808,9 +831,18 @@ webFrame.el.contentWindow.onerror = function () {
 };
 
 function onSubmitVideoURL() {
+  var frame = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
   var inputURL = openFile.el.textBox.value;
 
   if (inputURL) {
+    if (frame) {
+      if (inputURL.indexOf('://') == -1) {
+        inputURL = 'http://' + inputURL;
+      }
+
+      inputURL = '||' + inputURL;
+    }
+
     var res = videoUrlParser(inputURL);
     document.querySelector('#file-info').innerHTML = '⏳ 正在处理链接并加载中...';
     openFile.el.textBox.disabled = true;
