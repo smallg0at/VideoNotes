@@ -5,6 +5,11 @@
 
 A web-based application created for those who take notes while watching video.
 
+![GitHub All Releases](https://img.shields.io/github/downloads/smallg0at/VideoNotes/total?style=flat-square)
+![GitHub](https://img.shields.io/github/license/smallg0at/VideoNotes?style=flat-square)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/smallg0at/videonotes?style=flat-square)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/smallg0at/videonotes?style=flat-square)
+
 📥 [Download with GitHub Release](https://github.com/smallg0at/VideoNotes/releases)
 
 🌐 [Use Current Online (Standalone) Edition](https://smallg0at.github.io/VideoNotes/VideoNotes.html)
