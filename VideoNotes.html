@@ -176,8 +176,8 @@
                         <!-- <img src="./VideoNotes.svg" alt="" style="width: 100%;height: 100%;"> -->
                     </div>
                     <div>
-                        <h3 style="margin: 0.1em 0 0.5em;">VideoNotes 1.7.2</h3>
-                        <p style="margin: 0 0 0.5em;">@smallg0at 编写, 2020/3/31</p>
+                        <h3 style="margin: 0.1em 0 0.5em;">VideoNotes 1.8.0</h3>
+                        <p style="margin: 0 0 0.5em;">@smallg0at 编写, 2020/5/11</p>
                         <!-- <p style="margin: 0 0 0.5em;">服务器由 @steven12138z 提供</p> -->
                     </div>
                 </div>
@@ -193,10 +193,19 @@
                     <input type="checkbox" name="enable-force-method" id="enable-force-method" style="width: 20px;height: 20px">
                     <label for="enable-force-method">启用暴力的本地文件读取方式（不建议开启）</label>
                 </setting>
-                <interaction style="color: rgba(255, 255, 0, 0.5); width: fit-content;" small onclick="settingUtils.reset()">
+                <interaction id="reset-everything" style="color: rgba(255, 255, 0, 0.5); width: fit-content;" small>
                     <i class="ms-Icon ms-Icon--Delete" aria-hidden="true"></i>
                     <iconlabel class="important">重置设置与所有笔记</iconlabel>
                 </interaction>
+                <h3>快捷键帮助</h3>
+                <ul>
+                    <li><code>Ctrl+i</code>插入当前视频的时间（支持网页）</li>
+                    <li><code>s</code>打开设置</li>
+                    <li><code>o</code>打开</li>
+                    <li><code>Tab</code>切换到笔记区域</li>
+                    <li><code>Ctrl</code>点亮笔记区域</li>
+                    <li>其余按钮上有提示</li>
+                </ul>
                 <h3>打开文件帮助</h3>
                 <p>打开暴力方法后，请<strong>务必不要打开100MB以上的本地文件</strong>，否则页面可能崩溃</p>
                 <p>
@@ -205,14 +214,9 @@
                 <ul>
                     <li>bilibili 视频：复制视频链接 或 输入av或bv号即可自动解析，支持分P不支持切换，不支持看番。</li>
                     <li>acfun 视频：复制视频链接 或 输入ac号（如ac0000000）即可自动解析，由于内嵌播放器缘故不支持分P（默认1P），不支持看番。手机横屏观看时不建议全屏。</li>
-                    <li>网页：先输入 <code>||</code> 后面直接跟网页链接（二者间不可带空格）。有些网站可能拒绝接受iframe。</li>
+                    <li>Microsoft Stream：输入视频链接即可。</li>
+                    <li>网页：输入网页后在输入框内 <code>Shift+Enter</code>。有些网站可能拒绝接受iframe。</li>
                     <li>mp4 视频：输入视频URL即可。打开视频后如需再次打开，请刷新页面。</li>
-                </ul>
-                <p>
-                    以下类型不可用：
-                </p>
-                <ul>
-                    <li>flv：未来会做</li>
                 </ul>
                 <h3>笔记区帮助</h3>
                 <p>在大尺寸设备上，笔记在不操作时会变暗。此时，可选中笔记区后 上下滚动/进行选择/任意击键，或在页面内其他位置戳<code>Ctrl</code>。</p>
@@ -250,6 +254,7 @@
 </script>
 
 <script src="./src/main.mjs" type="module"></script>
+<data class="hidden" aria-hidden="true"></data>
 
 
 <style>
