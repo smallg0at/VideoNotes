@@ -7,9 +7,9 @@ const DEBUGMODE = {
     setting: false,
     devAction: false,
     quickRefresh: false,
-    timefilterDebug: true
+    timefilterDebug: false
 }
-
+const version="1.8.2"
 var settings = {
     isIE: false,
     localStorage: true,
@@ -19,8 +19,10 @@ var settings = {
     hasPasteApi: true,
     hasPermission: true,
     enableBruteForce: false,
-    usingNW: false
+    usingNW: false,
+    lastUsedVersion: ''
 }
+var isFirstRun = false
 var settingUtils = {
     read: function() {
         if (settings.localStorage) {
@@ -65,8 +67,7 @@ var settingUtils = {
     reset: function() {
         if (settings.localStorage) {
             if (confirm('确认清除设置与笔记？本操作无法撤销！')) {
-                localStorage.videoNotes = ''
-                localStorage.VNSettings = ''
+                localStorage.clear()
                 alert('清除完毕，页面将会刷新。')
                 location.reload()
             }
@@ -125,7 +126,11 @@ settingUtils.read()
 settingUtils.interaction.checkIfIE()
 settingUtils.interaction.checkPasteAPI()
 settingUtils.interaction.checkNW()
-
+if(version != settings.lastUsedVersion){
+    isFirstRun = true
+    console.log('isFirstRun:', settings.lastUsedVersion)
+    settings.lastUsedVersion = version
+}
 settingUtils.write()
 var nwWindow = null
 var nwClip = null
@@ -143,5 +148,6 @@ export {
     DEBUGMODE,
     settingUtils,
     nwWindow,
-    nwClip
+    nwClip,
+    isFirstRun
 }

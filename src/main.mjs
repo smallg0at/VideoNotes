@@ -9,7 +9,8 @@ import {
     DEBUGMODE,
     settingUtils,
     nwWindow,
-    nwClip
+    nwClip,
+    isFirstRun
 } from './settings.mjs'
 
 String.prototype.assignClick = function(func) {
@@ -22,6 +23,10 @@ String.prototype.assignClick = function(func) {
 '#reset-everything'.assignClick((event)=>{
     settingUtils.reset()
 })
+
+if(settings.usingNW){
+    document.querySelector('#is-app').textContent = "本地应用。"
+}
 
 
 var gui = {
@@ -150,6 +155,7 @@ document.addEventListener('fullscreenchange', () => {
 
 var notes = {
     container: document.querySelector('group'),
+    isAlwaysOn: false,
     activeTimeout: -1,
     item: (id = 0) => {
         return document.querySelectorAll('textarea').item(id)
@@ -164,7 +170,7 @@ var notes = {
             localStorage.videoNotes = textareaItem.value
         }
     },
-    setActive: function(force = false) {
+    setActive: function(force = false, alwaysLight = false) {
         this.save()
         this.container.classList.add('isactive');
         try {
@@ -172,7 +178,7 @@ var notes = {
         } catch (error) {
             console.error(error)
         }
-        if (textareaItem.value != "" && !force && window.innerWidth > 1024) {
+        if (textareaItem.value != "" && !force && window.innerWidth > 1024 && !this.isAlwaysOn) {
             this.activeTimeout = setTimeout(() => {
                 this.container.classList.remove('isactive')
             }, 2500);
@@ -442,6 +448,35 @@ var shortcut = {
             notes.insertText(event.target, fnstr)
         }
     })
+    if(settings.usingNW){
+        shortcut.add('ctrl+p', (event)=>{
+            let targetVideoElement = null
+            if (webFrame.isAvailable == true) {
+                let frame1 = document.querySelector('iframe').contentWindow
+                if (frame1.document.querySelector('video')) {
+                    targetVideoElement= frame1.document.querySelector('video')
+                } else if (frame1.document.querySelector('iframe').contentWindow.document.querySelector('video')) {
+                    targetVideoElement = frame1.document.querySelector('iframe').contentWindow.document.querySelector('video')
+                }
+            }else if(videoPlayer.isAvailable){
+                targetVideoElement = videoPlayer.el
+            }
+            if(targetVideoElement){
+                if(targetVideoElement.paused){
+                    targetVideoElement.play()
+                }else{
+                    targetVideoElement.pause()
+                }
+            }
+        })
+        shortcut.add('ctrl+r',()=>{
+            location.reload()
+        })
+    }
+    shortcut.add('ctrl+]', ()=>{
+        notes.isAlwaysOn = !notes.isAlwaysOn
+    })
+
 
 
     shortcut.apply()
@@ -562,7 +597,34 @@ function videoUrlParser(url = new String()) {
                 document.querySelector('.left').classList.add('bilibili')
             }
         }
-    } else if (url.startsWith('||')) {
+    } else if (url.indexOf('youtube.com') != -1 && !url.startsWith('||')) {
+        let urlOBJ = new URL(url)
+        if(settings.isIE){
+            return {
+                mode: 'frame',
+                parsed: url,
+                interaction: function() {
+                    webFrame.load(targetURL, false)
+                    document.querySelector('.left').classList.remove('bilibili')
+                }
+            }
+        }
+        let videoID = urlOBJ.searchParams.get('v')
+        let timeiter = urlOBJ.searchParams.get('t')
+        targetURL = 'https://www.youtube.com/embed/' + videoID
+        if(timeiter){
+            timeiter=timeiter.replace('s','')
+            targetURL = targetURL + '?start=' + timeiter
+        }
+        return {
+            mode: 'youtube',
+            parsed: targetURL,
+            interaction: function() {
+                webFrame.load(targetURL, true)
+                document.querySelector('.left').classList.add('bilibili')
+            }
+        }
+    }   else if (url.startsWith('||')) {
         targetURL = url.replace('||', '');
         if (DEBUGMODE.inspectGeneratedURL) {
             console.log('ParseURL', 'frame', targetURL)
@@ -655,6 +717,7 @@ function onSubmitVideoURL(frame=false) {
         document.querySelector('#file-info').innerHTML = '⏳ 正在处理链接并加载中...'
         openFile.el.textBox.disabled = true
         gui.mode = res.mode
+        history.change(inputURL)
         document.querySelector('#file-info').classList.toggle('hidden')
         if (!res.error) {
             setTimeout(() => {
@@ -898,11 +961,36 @@ var modal = {
 }
 modal.init();
 if (navigator.userAgent.indexOf('Firefox') == -1) {
-    modal.open('settings') //Temporary fix for rendering issue
-    modal.close('settings')
+    modal.open('welcome') //Temporary fix for rendering issue
+    modal.close('welcome')
     console.info('Doing settings workaround')
     // document.querySelector('modal#settings').classList.add('fadeout')
 }
+
+var history = {
+    cur: '',
+    setup: function(obj){
+        if(settings.localStorage){
+            let a = localStorage.getItem('VNHistory')
+            if(a){
+                this.cur=a
+                document.querySelector('#history-btn').innerHTML=a
+                document.querySelector('#history').classList.remove('hidden')
+            }
+        }
+    },
+    change: function(str){
+        if (settings.localStorage) {
+            localStorage.setItem('VNHistory',str)
+            this.setup()
+        }
+    }
+}
+'#history-btn'.assignClick((event)=>{
+    openFile.el.textBox.value = history.cur
+    onSubmitVideoURL()
+})
+history.setup()
 
 setTimeout(() => {
     if (shortcut.count <= 1) {
@@ -912,6 +1000,9 @@ setTimeout(() => {
     }
     if (!DEBUGMODE.devAction) {
         document.querySelector('#load-cover').parentElement.removeChild(document.querySelector('#load-cover'))
+    }
+    if(isFirstRun){
+        modal.open('welcome')
     }
 }, 1000);
 if (DEBUGMODE.devAction) {

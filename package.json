@@ -1,7 +1,7 @@
 {
   "name": "videonotes",
-  "version": "1.8.0",
-  "description": "Taking Notes while Watching Video",
+  "version": "1.8.2",
+  "description": "视频笔记",
   "main": "VideoNotes.html",
   "scripts": {
     "babel": "node ./babelgen.js",

@@ -8,8 +8,9 @@ var DEBUGMODE = {
   setting: false,
   devAction: false,
   quickRefresh: false,
-  timefilterDebug: true
+  timefilterDebug: false
 };
+var version = "1.8.2";
 var settings = {
   isIE: false,
   localStorage: true,
@@ -19,8 +20,10 @@ var settings = {
   hasPasteApi: true,
   hasPermission: true,
   enableBruteForce: false,
-  usingNW: false
+  usingNW: false,
+  lastUsedVersion: ''
 };
+var isFirstRun = false;
 var settingUtils = {
   read: function read() {
     if (settings.localStorage) {
@@ -71,8 +74,7 @@ var settingUtils = {
   reset: function reset() {
     if (settings.localStorage) {
       if (confirm('确认清除设置与笔记？本操作无法撤销！')) {
-        localStorage.videoNotes = '';
-        localStorage.VNSettings = '';
+        localStorage.clear();
         alert('清除完毕，页面将会刷新。');
         location.reload();
       }
@@ -129,6 +131,13 @@ settingUtils.read();
 settingUtils.interaction.checkIfIE();
 settingUtils.interaction.checkPasteAPI();
 settingUtils.interaction.checkNW();
+
+if (version != settings.lastUsedVersion) {
+  isFirstRun = true;
+  console.log('isFirstRun:', settings.lastUsedVersion);
+  settings.lastUsedVersion = version;
+}
+
 settingUtils.write();
 var nwWindow = null;
 var nwClip = null;
@@ -157,6 +166,11 @@ String.prototype.assignClick = function (func) {
 '#reset-everything'.assignClick(function (event) {
   settingUtils.reset();
 });
+
+if (settings.usingNW) {
+  document.querySelector('#is-app').textContent = "本地应用。";
+}
+
 var gui = {
   el: {
     left: document.querySelector('.left'),
@@ -288,6 +302,7 @@ document.addEventListener('fullscreenchange', function () {
 });
 var notes = {
   container: document.querySelector('group'),
+  isAlwaysOn: false,
   activeTimeout: -1,
   item: function item() {
     var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -307,6 +322,7 @@ var notes = {
     var _this = this;
 
     var force = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    var alwaysLight = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     this.save();
     this.container.classList.add('isactive');
 
@@ -316,7 +332,7 @@ var notes = {
       console.error(error);
     }
 
-    if (textareaItem.value != "" && !force && window.innerWidth > 1024) {
+    if (textareaItem.value != "" && !force && window.innerWidth > 1024 && !this.isAlwaysOn) {
       this.activeTimeout = setTimeout(function () {
         _this.container.classList.remove('isactive');
       }, 2500);
@@ -617,6 +633,39 @@ var shortcut = {
       notes.insertText(event.target, fnstr);
     }
   });
+
+  if (settings.usingNW) {
+    shortcut.add('ctrl+p', function (event) {
+      var targetVideoElement = null;
+
+      if (webFrame.isAvailable == true) {
+        var frame1 = document.querySelector('iframe').contentWindow;
+
+        if (frame1.document.querySelector('video')) {
+          targetVideoElement = frame1.document.querySelector('video');
+        } else if (frame1.document.querySelector('iframe').contentWindow.document.querySelector('video')) {
+          targetVideoElement = frame1.document.querySelector('iframe').contentWindow.document.querySelector('video');
+        }
+      } else if (videoPlayer.isAvailable) {
+        targetVideoElement = videoPlayer.el;
+      }
+
+      if (targetVideoElement) {
+        if (targetVideoElement.paused) {
+          targetVideoElement.play();
+        } else {
+          targetVideoElement.pause();
+        }
+      }
+    });
+    shortcut.add('ctrl+r', function () {
+      location.reload();
+    });
+  }
+
+  shortcut.add('ctrl+]', function () {
+    notes.isAlwaysOn = !notes.isAlwaysOn;
+  });
   shortcut.apply();
 }
 
@@ -741,6 +790,37 @@ function videoUrlParser() {
         document.querySelector('.left').classList.add('bilibili');
       }
     };
+  } else if (url.indexOf('youtube.com') != -1 && !url.startsWith('||')) {
+    var urlOBJ = new URL(url);
+
+    if (settings.isIE) {
+      return {
+        mode: 'frame',
+        parsed: url,
+        interaction: function interaction() {
+          webFrame.load(targetURL, false);
+          document.querySelector('.left').classList.remove('bilibili');
+        }
+      };
+    }
+
+    var videoID = urlOBJ.searchParams.get('v');
+    var timeiter = urlOBJ.searchParams.get('t');
+    targetURL = 'https://www.youtube.com/embed/' + videoID;
+
+    if (timeiter) {
+      timeiter = timeiter.replace('s', '');
+      targetURL = targetURL + '?start=' + timeiter;
+    }
+
+    return {
+      mode: 'youtube',
+      parsed: targetURL,
+      interaction: function interaction() {
+        webFrame.load(targetURL, true);
+        document.querySelector('.left').classList.add('bilibili');
+      }
+    };
   } else if (url.startsWith('||')) {
     targetURL = url.replace('||', '');
 
@@ -847,6 +927,7 @@ function onSubmitVideoURL() {
     document.querySelector('#file-info').innerHTML = '⏳ 正在处理链接并加载中...';
     openFile.el.textBox.disabled = true;
     gui.mode = res.mode;
+    history.change(inputURL);
     document.querySelector('#file-info').classList.toggle('hidden');
 
     if (!res.error) {
@@ -1115,12 +1196,37 @@ var modal = {
 modal.init();
 
 if (navigator.userAgent.indexOf('Firefox') == -1) {
-  modal.open('settings'); //Temporary fix for rendering issue
+  modal.open('welcome'); //Temporary fix for rendering issue
 
-  modal.close('settings');
+  modal.close('welcome');
   console.info('Doing settings workaround'); // document.querySelector('modal#settings').classList.add('fadeout')
 }
 
+var history = {
+  cur: '',
+  setup: function setup(obj) {
+    if (settings.localStorage) {
+      var a = localStorage.getItem('VNHistory');
+
+      if (a) {
+        this.cur = a;
+        document.querySelector('#history-btn').innerHTML = a;
+        document.querySelector('#history').classList.remove('hidden');
+      }
+    }
+  },
+  change: function change(str) {
+    if (settings.localStorage) {
+      localStorage.setItem('VNHistory', str);
+      this.setup();
+    }
+  }
+};
+'#history-btn'.assignClick(function (event) {
+  openFile.el.textBox.value = history.cur;
+  onSubmitVideoURL();
+});
+history.setup();
 setTimeout(function () {
   if (shortcut.count <= 1) {
     modal.open('openfile'); // modal.open('settings')
@@ -1128,6 +1234,10 @@ setTimeout(function () {
 
   if (!DEBUGMODE.devAction) {
     document.querySelector('#load-cover').parentElement.removeChild(document.querySelector('#load-cover'));
+  }
+
+  if (isFirstRun) {
+    modal.open('welcome');
   }
 }, 1000);
 

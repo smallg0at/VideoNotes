@@ -674,7 +674,12 @@
         a.help {
             display: inline;
             border-bottom: rgb(92, 92, 92) solid 1px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
             cursor: pointer;
+        }
+        a[href]::before{
+            content: '🔗 ';
         }
 
         @media (max-width: 600px) {
