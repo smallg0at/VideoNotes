@@ -1045,6 +1045,7 @@ var share = {
         }else{
             navigator.clipboard.writeText(uri)
         }
+        alert('似乎已复制链接，可粘贴查看。')
     }
 }
 '#sharelink'.assignClick(()=>{
@@ -1068,7 +1069,7 @@ setTimeout(() => {
 
 }, 1000);
 
-if(settings.usingNW || navigator.userAgent.toLowerCase.indexOf('windows') == -1){
+if(settings.usingNW || navigator.userAgent.toLowerCase().indexOf('windows') == -1){
     document.querySelector('#dl-desktop').classList.add('hidden')
 }
 '#dl-desktop'.assignClick(()=>{
