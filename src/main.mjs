@@ -20,6 +20,25 @@ String.prototype.assignClick = function(func) {
     }
 }
 
+if(!settings.isIE){
+    var URIDetector = {
+        url: new URL(location.href),
+        hasParam: false,
+        param: ''
+    }
+    URIDetector.hasParam = URIDetector.url.searchParams.has('query')
+    if(URIDetector.hasParam){
+        URIDetector.param = URIDetector.url.searchParams.get('query')
+        document.querySelector('#parameter').classList.remove('hidden')
+        document.querySelector('#parameter>info').innerHTML = '您正在用链接打开 ' + URIDetector.param + ' 。'
+    }
+    '#param-btn'.assignClick(()=>{
+        window.open(URIDetector.url.pathname, '_self')
+    })
+}else{
+    document.querySelector('#sharelink').classList.add('hidden')
+}
+
 '#reset-everything'.assignClick((event)=>{
     settingUtils.reset()
 })
@@ -690,7 +709,12 @@ webFrame.el.contentWindow.onbeforeunload = () => {
     gui.loadIndicator.show()
 }
 webFrame.el.onload = function() {
-    document.title = 'VideoNotes - ' + webFrame.el.contentWindow.document.title
+    try{
+        document.title = 'VideoNotes - ' + webFrame.el.contentWindow.document.title
+    }catch(e){
+        document.title = 'VideoNotes - ' + webFrame.el.src
+        console.warn(e)
+    }
     gui.loadIndicator.hide()
     if (gui.mode == 'bilibili' && settings.usingNW) {
         let insertedStyle = webFrame.el.contentDocument.createElement('style')
@@ -738,7 +762,10 @@ function onSubmitVideoURL(frame=false) {
 
 
 function togglePlayPause() { //onclick playpause button
-    if (window.location.href.indexOf(videoPlayer.el.src) != -1 || videoPlayer.inError) {
+    let a = new URL(window.location.href)
+    console.log(a, videoPlayer.el.src)
+    console.log(videoPlayer.el.src.indexOf(a.pathname)!=1)
+    if (videoPlayer.el.src.indexOf(a.pathname) != 1  || videoPlayer.el.src.startsWith(a.pathname) || videoPlayer.inError) {
         modal.open('openfile')
     } else {
         if (videoPlayer.isPaused()) {
@@ -794,7 +821,9 @@ var videoPlayer = {
         this.el.src = url
         this.inError = false
         document.querySelector('#time-edt').classList.remove('nodisplay')
-        gui.loadIndicator.hide()
+        setTimeout(()=>{
+            gui.loadIndicator.hide()
+        }, 2500)
         if (overrideTitle) {
             document.title = 'VideoNotes - ' + overrideTitle
         } else {
@@ -843,17 +872,25 @@ var videoPlayer = {
             destTimeString = destTimeString.trim()
             destTimeString = destTimeString.replace('：',':')
             let destTimeArr = destTimeString.split(':')
-            console.log(destTimeArr)
+            if(DEBUGMODE.jumpDebug){
+                console.log(destTimeArr)
+            }
             let destTime = 0
             let destLevel = -1
-            console.groupCollapsed('destTimeParse')
+            if (DEBUGMODE.jumpDebug){
+                console.groupCollapsed('destTimeParse')
+            }
             for(let i = destTimeArr.length-1;i>=0;i--){
                 destLevel++
                 destTime += (parseInt(destTimeArr[i])*(60**destLevel))
-                console.log((parseInt(destTimeArr[i]) * (60 ** destLevel)))
+                if (DEBUGMODE.jumpDebug){
+                    console.log((parseInt(destTimeArr[i]) * (60 ** destLevel)))
+                }
             }
-            console.groupEnd()
-            console.log(destTime)
+            if (DEBUGMODE.jumpDebug){
+                console.groupEnd()
+                console.log(destTime)
+            }
             if (!isNaN(destTime)) {
                 videoPlayer.el.currentTime = destTime
             }
@@ -992,6 +1029,30 @@ var history = {
 })
 history.setup()
 
+var share = {
+    establish: function(){
+        if(history.cur != ''){
+            var shareURI = 'https://smallg0at.github.io/VideoNotes/VideoNotes.html?query='+history.cur
+            var url = new URL(shareURI)
+            this.copy(url.href)
+        }else{
+            this.copy('https://smallg0at.github.io/VideoNotes/VideoNotes.html')
+        }
+    },
+    copy: function(uri){
+        if(settings.usingNW){
+            nwClip.set(uri, 'text')
+        }else{
+            navigator.clipboard.writeText(uri)
+        }
+    }
+}
+'#sharelink'.assignClick(()=>{
+    if(!settings.isIE){
+        share.establish()
+    }
+})
+
 setTimeout(() => {
     if (shortcut.count <= 1) {
         modal.open('openfile')
@@ -1004,7 +1065,22 @@ setTimeout(() => {
     if(isFirstRun){
         modal.open('welcome')
     }
+
 }, 1000);
+
+if(settings.usingNW || navigator.userAgent.toLowerCase.indexOf('windows') == -1){
+    document.querySelector('#dl-desktop').classList.add('hidden')
+}
+'#dl-desktop'.assignClick(()=>{
+    window.open('https://github.com/smallg0at/VideoNotes/releases/latest/')
+})
+
+setTimeout(()=>{
+    if (!settings.isIE && URIDetector.hasParam) {
+        openFile.el.textBox.value = URIDetector.param
+        onSubmitVideoURL()
+    }
+},3000)
 if (DEBUGMODE.devAction) {
     document.querySelector('#load-cover').parentElement.removeChild(document.querySelector('#load-cover'))
 }

@@ -7,7 +7,8 @@ const DEBUGMODE = {
     setting: false,
     devAction: false,
     quickRefresh: false,
-    timefilterDebug: false
+    timefilterDebug: false,
+    jumpDebug: false
 }
 const version="1.8.2"
 var settings = {

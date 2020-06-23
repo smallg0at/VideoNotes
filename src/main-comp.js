@@ -8,7 +8,8 @@ var DEBUGMODE = {
   setting: false,
   devAction: false,
   quickRefresh: false,
-  timefilterDebug: false
+  timefilterDebug: false,
+  jumpDebug: false
 };
 var version = "1.8.2";
 var settings = {
@@ -162,6 +163,27 @@ String.prototype.assignClick = function (func) {
     func(event);
   };
 };
+
+if (!settings.isIE) {
+  var URIDetector = {
+    url: new URL(location.href),
+    hasParam: false,
+    param: ''
+  };
+  URIDetector.hasParam = URIDetector.url.searchParams.has('query');
+
+  if (URIDetector.hasParam) {
+    URIDetector.param = URIDetector.url.searchParams.get('query');
+    document.querySelector('#parameter').classList.remove('hidden');
+    document.querySelector('#parameter>info').innerHTML = '您正在用链接打开 ' + URIDetector.param + ' 。';
+  }
+
+  '#param-btn'.assignClick(function () {
+    window.open(URIDetector.url.pathname, '_self');
+  });
+} else {
+  document.querySelector('#sharelink').classList.add('hidden');
+}
 
 '#reset-everything'.assignClick(function (event) {
   settingUtils.reset();
@@ -895,7 +917,13 @@ webFrame.el.contentWindow.onbeforeunload = function () {
 };
 
 webFrame.el.onload = function () {
-  document.title = 'VideoNotes - ' + webFrame.el.contentWindow.document.title;
+  try {
+    document.title = 'VideoNotes - ' + webFrame.el.contentWindow.document.title;
+  } catch (e) {
+    document.title = 'VideoNotes - ' + webFrame.el.src;
+    console.warn(e);
+  }
+
   gui.loadIndicator.hide();
 
   if (gui.mode == 'bilibili' && settings.usingNW) {
@@ -948,7 +976,11 @@ function onSubmitVideoURL() {
 
 function togglePlayPause() {
   //onclick playpause button
-  if (window.location.href.indexOf(videoPlayer.el.src) != -1 || videoPlayer.inError) {
+  var a = new URL(window.location.href);
+  console.log(a, videoPlayer.el.src);
+  console.log(videoPlayer.el.src.indexOf(a.pathname) != 1);
+
+  if (videoPlayer.el.src.indexOf(a.pathname) != 1 || videoPlayer.el.src.startsWith(a.pathname) || videoPlayer.inError) {
     modal.open('openfile');
   } else {
     if (videoPlayer.isPaused()) {
@@ -1006,7 +1038,9 @@ var videoPlayer = {
     this.el.src = url;
     this.inError = false;
     document.querySelector('#time-edt').classList.remove('nodisplay');
-    gui.loadIndicator.hide();
+    setTimeout(function () {
+      gui.loadIndicator.hide();
+    }, 2500);
 
     if (overrideTitle) {
       document.title = 'VideoNotes - ' + overrideTitle;
@@ -1059,19 +1093,31 @@ var videoPlayer = {
       destTimeString = destTimeString.trim();
       destTimeString = destTimeString.replace('：', ':');
       var destTimeArr = destTimeString.split(':');
-      console.log(destTimeArr);
+
+      if (DEBUGMODE.jumpDebug) {
+        console.log(destTimeArr);
+      }
+
       var destTime = 0;
       var destLevel = -1;
-      console.groupCollapsed('destTimeParse');
+
+      if (DEBUGMODE.jumpDebug) {
+        console.groupCollapsed('destTimeParse');
+      }
 
       for (var i = destTimeArr.length - 1; i >= 0; i--) {
         destLevel++;
         destTime += parseInt(destTimeArr[i]) * Math.pow(60, destLevel);
-        console.log(parseInt(destTimeArr[i]) * Math.pow(60, destLevel));
+
+        if (DEBUGMODE.jumpDebug) {
+          console.log(parseInt(destTimeArr[i]) * Math.pow(60, destLevel));
+        }
       }
 
-      console.groupEnd();
-      console.log(destTime);
+      if (DEBUGMODE.jumpDebug) {
+        console.groupEnd();
+        console.log(destTime);
+      }
 
       if (!isNaN(destTime)) {
         videoPlayer.el.currentTime = destTime;
@@ -1227,6 +1273,29 @@ var history = {
   onSubmitVideoURL();
 });
 history.setup();
+var share = {
+  establish: function establish() {
+    if (history.cur != '') {
+      var shareURI = 'https://smallg0at.github.io/VideoNotes/VideoNotes.html?query=' + history.cur;
+      var url = new URL(shareURI);
+      this.copy(url.href);
+    } else {
+      this.copy('https://smallg0at.github.io/VideoNotes/VideoNotes.html');
+    }
+  },
+  copy: function copy(uri) {
+    if (settings.usingNW) {
+      nwClip.set(uri, 'text');
+    } else {
+      navigator.clipboard.writeText(uri);
+    }
+  }
+};
+'#sharelink'.assignClick(function () {
+  if (!settings.isIE) {
+    share.establish();
+  }
+});
 setTimeout(function () {
   if (shortcut.count <= 1) {
     modal.open('openfile'); // modal.open('settings')
@@ -1240,6 +1309,20 @@ setTimeout(function () {
     modal.open('welcome');
   }
 }, 1000);
+
+if (settings.usingNW || navigator.userAgent.toLowerCase.indexOf('windows') == -1) {
+  document.querySelector('#dl-desktop').classList.add('hidden');
+}
+
+'#dl-desktop'.assignClick(function () {
+  window.open('https://github.com/smallg0at/VideoNotes/releases/latest/');
+});
+setTimeout(function () {
+  if (!settings.isIE && URIDetector.hasParam) {
+    openFile.el.textBox.value = URIDetector.param;
+    onSubmitVideoURL();
+  }
+}, 3000);
 
 if (DEBUGMODE.devAction) {
   document.querySelector('#load-cover').parentElement.removeChild(document.querySelector('#load-cover'));

@@ -112,6 +112,10 @@
                             <i class="ms-Icon ms-Icon--Refresh" aria-hidden="true"></i>
                             <iconlabel class="important">重新加载应用</iconlabel>
                         </interaction>
+                        <interaction id="sharelink" title="复制分享链接">
+                            <i class="ms-Icon ms-Icon--Copy" aria-hidden="true"></i>
+                            <iconlabel class="important">复制分享链接</iconlabel>
+                        </interaction>
                         <interaction id="settings-btn" data-modal="settings" title="设置 (s)">
                             <i class="ms-Icon ms-Icon--Settings" id="settings-icon" aria-hidden="true"></i>
                             <iconlabel class="important">设置 (s)</iconlabel>
@@ -131,6 +135,10 @@
                         <interaction id="openfile-sub" class="hidden" title="打开 (o)">
                             <i class="ms-Icon ms-Icon--OpenFile" aria-hidden="true"></i>
                             <iconlabel class="important">打开 (o)</iconlabel>
+                        </interaction>
+                        <interaction id="dl-desktop" title="下载桌面应用">
+                            <i class="ms-Icon ms-Icon--Download" aria-hidden="true"></i>
+                            <iconlabel class="important">下载桌面应用</iconlabel>
                         </interaction>
                     </operation>
                 </context>
@@ -154,6 +162,10 @@
                 </p> -->
                 <p id="file-info" class="hidden"></p>
                 <p>您可以从本地选取文件，或粘贴视频网站链接/视频源文件链接。<help data-modal="welcome">查看帮助</help>
+                </p>
+                <p id="parameter" class="hidden">
+                    <info></info>
+                    <interaction id="param-btn" small style="width: fit-content;display: inline; line-height: 3em;">点击我回到正常状态</interaction>
                 </p>
                 <p id="history" class="hidden">
                     您上次打开了
@@ -273,6 +285,10 @@
         altScript.src = './src/main-comp.js'
         altScript.type = 'text/javascript'
         document.documentElement.appendChild(altScript)
+        // var altScriptP = document.createElement('script')
+        // altScriptP.src = 'https://polyfill.io/v3/polyfill.min.js?features=URL%2CURLSearchParams'
+        // altScriptP.type = 'text/javascript'
+        // document.documentElement.appendChild(altScriptP)
         document.documentElement.classList.add('is-ie')
         document.querySelector('#playpause').setAttribute('onclick', 'togglePlayPause()')
 
