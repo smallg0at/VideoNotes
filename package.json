@@ -36,7 +36,8 @@
     "https://player.bilibili.com/*",
     "*://xbeibeix.com/*",
     "https://*.acfun.cn/player/*",
-    "*://web.microsoftstream.com/*"
+    "*://web.microsoftstream.com/*",
+    "*://youtube.com/*"
   ],
   "user-agent": "VideoNotes/%ver(%osinfo)",
   "window": {
