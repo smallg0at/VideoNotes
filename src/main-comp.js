@@ -11,7 +11,7 @@ var DEBUGMODE = {
   timefilterDebug: false,
   jumpDebug: false
 };
-var version = "1.8.2";
+var version = "1.9.0";
 var settings = {
   isIE: false,
   localStorage: true,
@@ -976,11 +976,10 @@ function onSubmitVideoURL() {
 
 function togglePlayPause() {
   //onclick playpause button
-  var a = new URL(window.location.href);
-  console.log(a, videoPlayer.el.src);
-  console.log(videoPlayer.el.src.indexOf(a.pathname) != 1);
+  var a = new URL(window.location.href); // console.log(a, videoPlayer.el.src)
+  // console.log(videoPlayer.el.src.indexOf(a.pathname)!=1)
 
-  if (videoPlayer.el.src.indexOf(a.pathname) != 1 || videoPlayer.el.src.startsWith(a.pathname) || videoPlayer.inError) {
+  if (videoPlayer.el.src.indexOf(a.pathname) != -1 || videoPlayer.inError) {
     modal.open('openfile');
   } else {
     if (videoPlayer.isPaused()) {
@@ -1289,6 +1288,8 @@ var share = {
     } else {
       navigator.clipboard.writeText(uri);
     }
+
+    alert('似乎已复制链接，可粘贴查看。');
   }
 };
 '#sharelink'.assignClick(function () {
@@ -1310,7 +1311,7 @@ setTimeout(function () {
   }
 }, 1000);
 
-if (settings.usingNW || navigator.userAgent.toLowerCase.indexOf('windows') == -1) {
+if (settings.usingNW || navigator.userAgent.toLowerCase().indexOf('windows') == -1) {
   document.querySelector('#dl-desktop').classList.add('hidden');
 }
 

@@ -763,8 +763,8 @@ function onSubmitVideoURL(frame=false) {
 
 function togglePlayPause() { //onclick playpause button
     let a = new URL(window.location.href)
-    console.log(a, videoPlayer.el.src)
-    console.log(videoPlayer.el.src.indexOf(a.pathname)!=1)
+    // console.log(a, videoPlayer.el.src)
+    // console.log(videoPlayer.el.src.indexOf(a.pathname)!=1)
     if (videoPlayer.el.src.indexOf(a.pathname) != -1  || videoPlayer.inError) {
         modal.open('openfile')
     } else {
