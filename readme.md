@@ -12,9 +12,9 @@ A web-based application created for those who take notes while watching video.
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/smallg0at/videonotes?style=flat-square)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/smallg0at/videonotes?style=flat-square)
 
-📥 [从 GitHub Release 下载最新版（推荐，Windows） | Download with GitHub Release](https://github.com/smallg0at/VideoNotes/releases)
+📥 [从 GitHub Release 下载最新版（推荐，Windows） \| Download with GitHub Release](https://github.com/smallg0at/VideoNotes/releases)
 
-🌐 [使用最新的在线版本 | Use Current Online (Standalone) Edition](https://smallg0at.github.io/VideoNotes/VideoNotes.html)
+🌐 [使用最新的在线版本 \| Use Current Online (Standalone) Edition](https://smallg0at.github.io/VideoNotes/VideoNotes.html)
 
 ## Features
 
