@@ -765,7 +765,7 @@ function togglePlayPause() { //onclick playpause button
     let a = new URL(window.location.href)
     console.log(a, videoPlayer.el.src)
     console.log(videoPlayer.el.src.indexOf(a.pathname)!=1)
-    if (videoPlayer.el.src.indexOf(a.pathname) != 1  || videoPlayer.el.src.startsWith(a.pathname) || videoPlayer.inError) {
+    if (videoPlayer.el.src.indexOf(a.pathname) != -1  || videoPlayer.inError) {
         modal.open('openfile')
     } else {
         if (videoPlayer.isPaused()) {
