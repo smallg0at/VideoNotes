@@ -343,6 +343,10 @@ var shortcut = {
                 let a = this.list.get('any')
                 a(event)
             }
+            if(!event.key){
+                console.warn(ReferenceError('Key does not exist'))
+                return null
+            }
             let composedKey = event.key
             if(event.altKey){
                 composedKey = 'alt+'+composedKey
@@ -1045,7 +1049,7 @@ var share = {
         }else{
             navigator.clipboard.writeText(uri)
         }
-        alert('似乎已复制链接，可粘贴查看。')
+        alert('似乎已复制分享链接（视频为最近一次观看的在线视频），可粘贴查看。')
     }
 }
 '#sharelink'.assignClick(()=>{
