@@ -720,6 +720,7 @@
                 top: 100%;
                 bottom: inherit;
                 transform-origin: top right;
+                zoom: 0.8 !important;
             }
             div.left {
                 width: 100%;
