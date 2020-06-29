@@ -92,9 +92,9 @@
 
         <div>
             <div style="display: flex;position: relative;" id="time-edt" class="nodisplay timecontrols">
-                <interaction class="half" id="player-rev"><i class="ms-Icon ms-Icon--DoubleChevronLeft8" aria-hidden="true"></i></interaction>
-                <interaction class="half" id="player-jump"><i class="ms-Icon ms-Icon--SIPMove" aria-hidden="true"></i></interaction>
-                <interaction class="half" id="player-forw"><i class="ms-Icon ms-Icon--DoubleChevronRight8" aria-hidden="true"></i></interaction>
+                <interaction class="half" id="player-rev" title="-5s"><i class="ms-Icon ms-Icon--DoubleChevronLeft8" aria-hidden="true"></i></interaction>
+                <interaction class="half" id="player-jump" title="跳到时间"><i class="ms-Icon ms-Icon--SIPMove" aria-hidden="true"></i></interaction>
+                <interaction class="half" id="player-forw" title="+5s"><i class="ms-Icon ms-Icon--DoubleChevronRight8" aria-hidden="true"></i></interaction>
             </div>
             <div style="display: flex;flex-shrink: 0;" class="filecontrols">
                 <interaction left id="playpause" style="flex-shrink: 1.4; margin-right: 6px;">
@@ -104,7 +104,7 @@
                 <!-- <interaction onclick="toggleInfo()" id="info" style="width: 50px"><i class="ms-Icon ms-Icon--Info" aria-hidden="true"></i>
                 </interaction> -->
                 <context>
-                    <interaction haschild style="width: 50px" title="" id="context-toggle">
+                    <interaction haschild style="width: 50px" title="菜单" id="context-toggle">
                         <i class="ms-Icon ms-Icon--GlobalNavButton" aria-hidden="true"></i>
                     </interaction>
                     <operation id="more-options">
@@ -128,7 +128,7 @@
                             <i class="ms-Icon ms-Icon--Checkbox" aria-hidden="true"></i>
                             <iconlabel class="important">窗口置顶</iconlabel>
                         </interaction>
-                        <interaction id="fullscreen" title="全屏 (f)">
+                        <interaction id="fullscreen" title="切换全屏 (f)">
                             <i class="ms-Icon ms-Icon--FullScreen" aria-hidden="true"></i>
                             <iconlabel class="important">全屏 (f)</iconlabel>
                         </interaction>
@@ -157,7 +157,7 @@
                     <label for="openlf" class="input-file-alternative no-custom"><i class="ms-Icon ms-Icon--OpenFolderHorizontal" aria-hidden="true"></i><span style="vertical-align: center;">本地选取文件</span></label>
                     <!-- <input type="button" value='<i class= ms-Icon ms-Icon--OpenFile' aria-hidden='true'\>\<\/i\>打开" id="URLopen"></input> -->
                 </div>
-                <input type="file" name="openlf" id="openlf" accept="video/mp4, .html, .pdf, .swf">
+                <input type="file" name="openlf" id="openlf" accept="video/*, .html, .pdf, .swf">
                 <!-- <p id="grant-clipboard">建议您先允许剪贴板权限。<help onclick="settingUtils.interaction.grantClipboard()">点击以允许</help>
                 </p> -->
                 <p id="file-info" class="hidden"></p>
