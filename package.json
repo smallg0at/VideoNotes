@@ -1,6 +1,6 @@
 {
   "name": "videonotes",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "视频笔记",
   "main": "VideoNotes.html",
   "scripts": {

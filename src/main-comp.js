@@ -11,7 +11,7 @@ var DEBUGMODE = {
   timefilterDebug: false,
   jumpDebug: false
 };
-var version = "1.9.0";
+var version = "1.9.1";
 var settings = {
   isIE: false,
   localStorage: true,
@@ -515,6 +515,11 @@ var shortcut = {
         a(event);
       }
 
+      if (!event.key) {
+        console.warn(ReferenceError('Key does not exist'));
+        return null;
+      }
+
       var composedKey = event.key;
 
       if (event.altKey) {
@@ -951,6 +956,12 @@ function onSubmitVideoURL() {
       inputURL = '||' + inputURL;
     }
 
+    if (inputURL.indexOf(share.service) != -1 && !settings.isIE) {
+      var parser = new URL(inputURL);
+      inputURL = parser.searchParams.get('query');
+    }
+
+    console.log(inputURL);
     var res = videoUrlParser(inputURL);
     document.querySelector('#file-info').innerHTML = '⏳ 正在处理链接并加载中...';
     openFile.el.textBox.disabled = true;
@@ -1020,7 +1031,7 @@ var videoPlayer = {
     var f = JSON.stringify(e);
     console.log(f);
     document.title = 'VideoNotes - 错误';
-    modal.custom.info.render("\u5F88\u62B1\u6B49\uFF0C\u89C6\u9891\u64AD\u653E\u65F6\u51FA\u73B0\u4E86\u9519\u8BEF\u3002<br>\u5F53\u524D\u6B63\u5728\u64AD\u653E\uFF1A<a href=\"".concat(e.srcElement.src, "\" class=\"help\">").concat(e.srcElement.src, "</a><br>Timestamp: ").concat(e.timeStamp, "<br>\u672C\u9519\u8BEF\u53EF\u80FD\u662F\u7531\u4E8E\u4E0D\u614E\u5FD8\u5728\u7F51\u9875URL\u524D\u52A0 <code>||</code> \u3001\u7F51\u7EDC\u8FDE\u63A5\u4E0D\u7545\u3001\u89C6\u9891\u7F16\u7801\u4E0D\u88AB\u652F\u6301\u5BFC\u81F4\u7684\u3002<br>\u60A8\u53EF\u5C1D\u8BD5\u5237\u65B0\u9875\u9762\u3001\u91CD\u542F\u6D4F\u89C8\u5668\u3001\u91CD\u542F\u8BA1\u7B97\u673A\u89E3\u51B3\u3002"), '出现错误');
+    modal.custom.info.render("\u5F88\u62B1\u6B49\uFF0C\u89C6\u9891\u64AD\u653E\u65F6\u51FA\u73B0\u4E86\u9519\u8BEF\u3002<br>\u5F53\u524D\u6B63\u5728\u64AD\u653E\uFF1A<a href=\"".concat(e.srcElement.src, "\" class=\"help\">").concat(e.srcElement.src, "</a><br>Timestamp: ").concat(e.timeStamp, "<br>\u672C\u9519\u8BEF\u53EF\u80FD\u662F\u7531\u4E8E\u4E0D\u614E\u5FD8\u5728\u7F51\u9875URL\u524D\u52A0 <code>||</code> \u3001\u7F51\u7EDC\u8FDE\u63A5\u4E0D\u7545\u3001\u89C6\u9891\u7F16\u7801\u4E0D\u88AB\u652F\u6301\u5BFC\u81F4\u7684\u3002<br>\u60A8\u53EF\u5C1D\u8BD5\u4F7F\u7528\u7F51\u9875\u6A21\u5F0F\u6253\u5F00\u3001\u5237\u65B0\u9875\u9762\u3001\u91CD\u542F\u6D4F\u89C8\u5668\u3001\u91CD\u542F\u8BA1\u7B97\u673A\u89E3\u51B3\u3002"), '出现错误');
     document.querySelector('#time-edt').classList.add('nodisplay');
     gui.updateRightHeight();
     throw e;
@@ -1273,13 +1284,14 @@ var history = {
 });
 history.setup();
 var share = {
+  service: 'https://smallg0at.github.io/VideoNotes/VideoNotes.html',
   establish: function establish() {
     if (history.cur != '') {
-      var shareURI = 'https://smallg0at.github.io/VideoNotes/VideoNotes.html?query=' + history.cur;
+      var shareURI = this.service + '?query=' + history.cur;
       var url = new URL(shareURI);
       this.copy(url.href);
     } else {
-      this.copy('https://smallg0at.github.io/VideoNotes/VideoNotes.html');
+      this.copy(this.service);
     }
   },
   copy: function copy(uri) {
@@ -1289,7 +1301,7 @@ var share = {
       navigator.clipboard.writeText(uri);
     }
 
-    alert('似乎已复制链接，可粘贴查看。');
+    alert('似乎已复制分享链接（视频为最近一次观看的在线视频），可粘贴查看。');
   }
 };
 '#sharelink'.assignClick(function () {
