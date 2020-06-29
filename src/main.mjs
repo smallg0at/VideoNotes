@@ -741,7 +741,11 @@ function onSubmitVideoURL(frame=false) {
             }
             inputURL = '||'+inputURL
         }
-        inputURL = inputURL.replace(share.service, '')
+        if(inputURL.indexOf(share.service) != -1 && !settings.isIE){
+            let parser = new URL(inputURL)
+            inputURL = parser.searchParams.get('query')
+        }
+        console.log(inputURL)
         let res = videoUrlParser(inputURL)
         document.querySelector('#file-info').innerHTML = '⏳ 正在处理链接并加载中...'
         openFile.el.textBox.disabled = true
