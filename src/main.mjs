@@ -741,6 +741,7 @@ function onSubmitVideoURL(frame=false) {
             }
             inputURL = '||'+inputURL
         }
+        inputURL = inputURL.replace(share.service, '')
         let res = videoUrlParser(inputURL)
         document.querySelector('#file-info').innerHTML = '⏳ 正在处理链接并加载中...'
         openFile.el.textBox.disabled = true
@@ -811,7 +812,7 @@ var videoPlayer = {
         let f = JSON.stringify(e)
         console.log(f)
         document.title = 'VideoNotes - 错误'
-        modal.custom.info.render(`很抱歉，视频播放时出现了错误。<br>当前正在播放：<a href="${e.srcElement.src}" class="help">${e.srcElement.src}</a><br>Timestamp: ${e.timeStamp}<br>本错误可能是由于不慎忘在网页URL前加 <code>||</code> 、网络连接不畅、视频编码不被支持导致的。<br>您可尝试刷新页面、重启浏览器、重启计算机解决。`, '出现错误')
+        modal.custom.info.render(`很抱歉，视频播放时出现了错误。<br>当前正在播放：<a href="${e.srcElement.src}" class="help">${e.srcElement.src}</a><br>Timestamp: ${e.timeStamp}<br>本错误可能是由于不慎忘在网页URL前加 <code>||</code> 、网络连接不畅、视频编码不被支持导致的。<br>您可尝试使用网页模式打开、刷新页面、重启浏览器、重启计算机解决。`, '出现错误')
         document.querySelector('#time-edt').classList.add('nodisplay')
         gui.updateRightHeight()
         throw e
