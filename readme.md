@@ -34,7 +34,7 @@ A web-based application created for those who take notes while watching video.
 
 ### Browser
 
-simply open `VideoNotes.html` in any browser or serve on a server.
+simply serve on a server, and change the share.service on main.mjs.
 
 Internet Explorer is supported, but its scripts should be compiled from main.mjs with `npm run babel` first.
 

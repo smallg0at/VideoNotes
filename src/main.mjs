@@ -1034,13 +1034,14 @@ var history = {
 history.setup()
 
 var share = {
+    service: 'https://smallg0at.github.io/VideoNotes/VideoNotes.html',
     establish: function(){
         if(history.cur != ''){
-            var shareURI = 'https://smallg0at.github.io/VideoNotes/VideoNotes.html?query='+history.cur
+            var shareURI = this.service+'?query='+history.cur
             var url = new URL(shareURI)
             this.copy(url.href)
         }else{
-            this.copy('https://smallg0at.github.io/VideoNotes/VideoNotes.html')
+            this.copy(this.service)
         }
     },
     copy: function(uri){
