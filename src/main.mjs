@@ -20,30 +20,30 @@ String.prototype.assignClick = function(func) {
     }
 }
 
-if(!settings.isIE){
+if (!settings.isIE) {
     var URIDetector = {
         url: new URL(location.href),
         hasParam: false,
         param: ''
     }
     URIDetector.hasParam = URIDetector.url.searchParams.has('query')
-    if(URIDetector.hasParam){
+    if (URIDetector.hasParam) {
         URIDetector.param = URIDetector.url.searchParams.get('query')
         document.querySelector('#parameter').classList.remove('hidden')
         document.querySelector('#parameter>info').innerHTML = '您正在用链接打开 ' + URIDetector.param + ' 。'
     }
-    '#param-btn'.assignClick(()=>{
+    '#param-btn'.assignClick(() => {
         window.open(URIDetector.url.pathname, '_self')
     })
-}else{
+} else {
     document.querySelector('#sharelink').classList.add('hidden')
 }
 
-'#reset-everything'.assignClick((event)=>{
+'#reset-everything'.assignClick((event) => {
     settingUtils.reset()
 })
 
-if(settings.usingNW){
+if (settings.usingNW) {
     document.querySelector('#is-app').textContent = "本地应用。"
 }
 
@@ -88,7 +88,7 @@ var gui = {
                     // document.querySelector('#fullscreen').innerHTML = "全屏"
                 }
             } else {
-                if (document.fullscreenElement||document.msFullscreenElement) {
+                if (document.fullscreenElement || document.msFullscreenElement) {
                     if (document.exitFullscreen) {
                         document.exitFullscreen();
                     } else if (document.mozCancelFullScreen) {
@@ -216,12 +216,12 @@ var notes = {
     onFinishLoad: function() {
         this.item().placeholder = '在这里记点笔记吧。' + (settings.localStorage ? '' : '\n\n您的浏览器暂不支持本地存储，因此您的文本在刷新时不会被保留！')
     },
-    insertText: function(target, text){
+    insertText: function(target, text) {
         target.focus()
         if (typeof document.selection != "undefined") {
             document.selection.createRange().text = text;
         } else {
-            target.value = target.value.substr(0, target.selectionStart) +text + target.value.substring(target.selectionStart, target.length);
+            target.value = target.value.substr(0, target.selectionStart) + text + target.value.substring(target.selectionStart, target.length);
         }
     }
 }
@@ -316,7 +316,9 @@ openFile.el.filePicker.onchange = () => {
 }
 
 '#URLpaste'.assignClick((event) => openFile.gui.pasteContent(event))
-'#URLopen'.assignClick((event) => {onSubmitVideoURL(event.shiftKey)})
+'#URLopen'.assignClick((event) => {
+    onSubmitVideoURL(event.shiftKey)
+})
 
 
 var shortcut = {
@@ -343,19 +345,19 @@ var shortcut = {
                 let a = this.list.get('any')
                 a(event)
             }
-            if(!event.key){
+            if (!event.key) {
                 console.warn(ReferenceError('Key does not exist'))
                 return null
             }
             let composedKey = event.key
-            if(event.altKey){
-                composedKey = 'alt+'+composedKey
+            if (event.altKey) {
+                composedKey = 'alt+' + composedKey
             }
-            if(event.shiftKey){
-                composedKey = 'shift+'+composedKey
+            if (event.shiftKey) {
+                composedKey = 'shift+' + composedKey
             }
-            if(event.ctrlKey){
-                composedKey = 'ctrl+'+composedKey
+            if (event.ctrlKey) {
+                composedKey = 'ctrl+' + composedKey
             }
             composedKey = composedKey.toLocaleLowerCase()
             if (this.list.has(composedKey)) {
@@ -411,13 +413,13 @@ var shortcut = {
             notes.setActive()
         }
     })
-    shortcut.add('Tab', (event)=>{
+    shortcut.add('Tab', (event) => {
         if (event.target.tagName != 'TEXTAREA' && event.target.tagName != 'INPUT') {
             document.querySelector('textarea').select()
         }
     })
-    if(DEBUGMODE.quickRefresh){
-        shortcut.add('ctrl+r',(event)=>{
+    if (DEBUGMODE.quickRefresh) {
+        shortcut.add('ctrl+r', (event) => {
             location.reload()
         })
     }
@@ -427,76 +429,76 @@ var shortcut = {
         })
     }
 
-    shortcut.add('ctrl+i',(event)=>{
-        if(event.target.tagName == 'TEXTAREA'){
+    shortcut.add('ctrl+i', (event) => {
+        if (event.target.tagName == 'TEXTAREA') {
             let playbackTime = 0
-            if(videoPlayer.isAvailable){
+            if (videoPlayer.isAvailable) {
                 playbackTime = videoPlayer.el.currentTime
-            }else if(settings.usingNW){//disabled
-                if(webFrame.isAvailable == true){
+            } else if (settings.usingNW) { //disabled
+                if (webFrame.isAvailable == true) {
                     let timeData = null
                     let frame1 = document.querySelector('iframe').contentWindow
-                    if (frame1.document.querySelector('video')){
+                    if (frame1.document.querySelector('video')) {
                         timeData = frame1.document.querySelector('video').currentTime
                     } else if (frame1.document.querySelector('iframe').contentWindow.document.querySelector('video')) {
                         timeData = frame1.document.querySelector('iframe').contentWindow.document.querySelector('video').currentTime
                     }
-                    if(DEBUGMODE.timefilterDebug){
+                    if (DEBUGMODE.timefilterDebug) {
                         console.log('InsTime: Web:', timeData)
                     }
-                    if(timeData){
+                    if (timeData) {
                         playbackTime = timeData
-                    }else{
-                        modal.custom.info.render('当前网站暂时不支持插入时间。','错误')
+                    } else {
+                        modal.custom.info.render('当前网站暂时不支持插入时间。', '错误')
                     }
                 }
-            }else{
+            } else {
                 return 0
             }
-            if(DEBUGMODE.timefilterDebug){
+            if (DEBUGMODE.timefilterDebug) {
                 console.log(playbackTime)
             }
-            let playbackCounter = [0,0,0]
-            playbackCounter[2] = Math.floor(playbackTime%60)
+            let playbackCounter = [0, 0, 0]
+            playbackCounter[2] = Math.floor(playbackTime % 60)
 
-            playbackCounter[1] = Math.floor(playbackTime/60)
-            while(playbackCounter[1]>=60){
+            playbackCounter[1] = Math.floor(playbackTime / 60)
+            while (playbackCounter[1] >= 60) {
                 playbackCounter[1] -= 60
                 playbackCounter[0]++
             }
             let fnstr = ''
-            fnstr = (playbackCounter[0] > 0)?(playbackCounter[0])+':':''
+            fnstr = (playbackCounter[0] > 0) ? (playbackCounter[0]) + ':' : ''
             fnstr = fnstr.concat((playbackCounter[0] > 0 && playbackCounter[1] < 10) ? '0' : '' + playbackCounter[1] + ':')
             fnstr = fnstr.concat(((playbackCounter[2] >= 10) ? '' : '0') + playbackCounter[2])
             notes.insertText(event.target, fnstr)
         }
     })
-    if(settings.usingNW){
-        shortcut.add('ctrl+p', (event)=>{
+    if (settings.usingNW) {
+        shortcut.add('ctrl+p', (event) => {
             let targetVideoElement = null
             if (webFrame.isAvailable == true) {
                 let frame1 = document.querySelector('iframe').contentWindow
                 if (frame1.document.querySelector('video')) {
-                    targetVideoElement= frame1.document.querySelector('video')
+                    targetVideoElement = frame1.document.querySelector('video')
                 } else if (frame1.document.querySelector('iframe').contentWindow.document.querySelector('video')) {
                     targetVideoElement = frame1.document.querySelector('iframe').contentWindow.document.querySelector('video')
                 }
-            }else if(videoPlayer.isAvailable){
+            } else if (videoPlayer.isAvailable) {
                 targetVideoElement = videoPlayer.el
             }
-            if(targetVideoElement){
-                if(targetVideoElement.paused){
+            if (targetVideoElement) {
+                if (targetVideoElement.paused) {
                     targetVideoElement.play()
-                }else{
+                } else {
                     targetVideoElement.pause()
                 }
             }
         })
-        shortcut.add('ctrl+r',()=>{
+        shortcut.add('ctrl+r', () => {
             location.reload()
         })
     }
-    shortcut.add('ctrl+]', ()=>{
+    shortcut.add('ctrl+]', () => {
         notes.isAlwaysOn = !notes.isAlwaysOn
     })
 
@@ -517,14 +519,30 @@ document.onkeydown = (event) => {
 
 notes.setActive()
 
+function calculateTimeString(time) {
+    let playbackCounter = [0, 0, 0]
+    playbackCounter[2] = Math.floor(time % 60)
+
+    playbackCounter[1] = Math.floor(time / 60)
+    while (playbackCounter[1] >= 60) {
+        playbackCounter[1] -= 60
+        playbackCounter[0]++
+    }
+    let fnstr = ''
+    fnstr = (playbackCounter[0] > 0) ? (playbackCounter[0]) + ':' : ''
+    fnstr = fnstr.concat((playbackCounter[0] > 0 && playbackCounter[1] < 10) ? '0' : '' + playbackCounter[1] + ':')
+    fnstr = fnstr.concat(((playbackCounter[2] >= 10) ? '' : '0') + playbackCounter[2])
+    return fnstr
+}
+
 setInterval(() => { //refreshes every 100ms, setting time bar
     if (frameCount >= 0) {
         if (videoPlayer.isAvailable) {
             let mediaPlayback = videoPlayer.el
             document.querySelector('#play-length').setAttribute('style', 'width: ' + (mediaPlayback.currentTime / mediaPlayback.duration * 100).toFixed(2) + '%;');
-            let existstr = Math.floor(mediaPlayback.currentTime / 60) + ':' + Math.floor(mediaPlayback.currentTime % 60)
-            let totalstr = Math.floor(mediaPlayback.duration / 60) + ':' + Math.floor(mediaPlayback.duration % 60)
-            document.querySelector('.media-playback-timing').innerHTML = existstr + ' / ' + totalstr
+            // let existstr = Math.floor(mediaPlayback.currentTime / 60) + ':' + Math.floor(mediaPlayback.currentTime % 60)
+            // let totalstr = Math.floor(mediaPlayback.duration / 60) + ':' + Math.floor(mediaPlayback.duration % 60)
+            document.querySelector('.media-playback-timing').innerHTML = calculateTimeString(mediaPlayback.currentTime) + ' / ' + calculateTimeString(mediaPlayback.duration)
         }
     }
     frameCount++
@@ -622,7 +640,7 @@ function videoUrlParser(url = new String()) {
         }
     } else if (url.indexOf('youtube.com') != -1 && !url.startsWith('||')) {
         let urlOBJ = new URL(url)
-        if(settings.isIE){
+        if (settings.isIE) {
             return {
                 mode: 'frame',
                 parsed: url,
@@ -635,8 +653,8 @@ function videoUrlParser(url = new String()) {
         let videoID = urlOBJ.searchParams.get('v')
         let timeiter = urlOBJ.searchParams.get('t')
         targetURL = 'https://www.youtube.com/embed/' + videoID
-        if(timeiter){
-            timeiter=timeiter.replace('s','')
+        if (timeiter) {
+            timeiter = timeiter.replace('s', '')
             targetURL = targetURL + '?start=' + timeiter
         }
         return {
@@ -647,7 +665,7 @@ function videoUrlParser(url = new String()) {
                 document.querySelector('.left').classList.add('bilibili')
             }
         }
-    }   else if (url.startsWith('||')) {
+    } else if (url.startsWith('||')) {
         targetURL = url.replace('||', '');
         if (DEBUGMODE.inspectGeneratedURL) {
             console.log('ParseURL', 'frame', targetURL)
@@ -713,9 +731,9 @@ webFrame.el.contentWindow.onbeforeunload = () => {
     gui.loadIndicator.show()
 }
 webFrame.el.onload = function() {
-    try{
+    try {
         document.title = 'VideoNotes - ' + webFrame.el.contentWindow.document.title
-    }catch(e){
+    } catch (e) {
         document.title = 'VideoNotes - ' + webFrame.el.src
         console.warn(e)
     }
@@ -732,16 +750,16 @@ webFrame.el.contentWindow.onerror = function() {
     self.onload()
 }
 
-function onSubmitVideoURL(frame=false) {
+function onSubmitVideoURL(frame = false) {
     let inputURL = openFile.el.textBox.value
     if (inputURL) {
-        if(frame){
-            if(inputURL.indexOf('://')==-1){
-                inputURL = 'http://'+inputURL
+        if (frame) {
+            if (inputURL.indexOf('://') == -1) {
+                inputURL = 'http://' + inputURL
             }
-            inputURL = '||'+inputURL
+            inputURL = '||' + inputURL
         }
-        if(inputURL.indexOf(share.service) != -1 && !settings.isIE){
+        if (inputURL.indexOf(share.service) != -1 && !settings.isIE) {
             let parser = new URL(inputURL)
             inputURL = parser.searchParams.get('query')
         }
@@ -774,7 +792,7 @@ function togglePlayPause() { //onclick playpause button
     let a = new URL(window.location.href)
     // console.log(a, videoPlayer.el.src)
     // console.log(videoPlayer.el.src.indexOf(a.pathname)!=1)
-    if (videoPlayer.el.src.indexOf(a.pathname) != -1  || videoPlayer.inError) {
+    if (videoPlayer.el.src.indexOf(a.pathname) != -1 || videoPlayer.inError) {
         modal.open('openfile')
     } else {
         if (videoPlayer.isPaused()) {
@@ -789,7 +807,7 @@ function togglePlayPause() { //onclick playpause button
     togglePlayPause();
 })
 
-'#openfile-sub'.assignClick(()=>{
+'#openfile-sub'.assignClick(() => {
     modal.open('openfile')
 })
 
@@ -830,7 +848,7 @@ var videoPlayer = {
         this.el.src = url
         this.inError = false
         document.querySelector('#time-edt').classList.remove('nodisplay')
-        setTimeout(()=>{
+        setTimeout(() => {
             gui.loadIndicator.hide()
         }, 2500)
         if (overrideTitle) {
@@ -858,7 +876,7 @@ var videoPlayer = {
         document.querySelector('#openfile-sub').classList.remove('hidden')
 
     },
-    unload: function(){
+    unload: function() {
         this.el.onplay = null
         this.el.onpause = null
         this.el.onerror = null
@@ -879,24 +897,24 @@ var videoPlayer = {
             }
         } else {
             destTimeString = destTimeString.trim()
-            destTimeString = destTimeString.replace('：',':')
+            destTimeString = destTimeString.replace('：', ':')
             let destTimeArr = destTimeString.split(':')
-            if(DEBUGMODE.jumpDebug){
+            if (DEBUGMODE.jumpDebug) {
                 console.log(destTimeArr)
             }
             let destTime = 0
             let destLevel = -1
-            if (DEBUGMODE.jumpDebug){
+            if (DEBUGMODE.jumpDebug) {
                 console.groupCollapsed('destTimeParse')
             }
-            for(let i = destTimeArr.length-1;i>=0;i--){
+            for (let i = destTimeArr.length - 1; i >= 0; i--) {
                 destLevel++
-                destTime += (parseInt(destTimeArr[i])*(60**destLevel))
-                if (DEBUGMODE.jumpDebug){
+                destTime += (parseInt(destTimeArr[i]) * (60 ** destLevel))
+                if (DEBUGMODE.jumpDebug) {
                     console.log((parseInt(destTimeArr[i]) * (60 ** destLevel)))
                 }
             }
-            if (DEBUGMODE.jumpDebug){
+            if (DEBUGMODE.jumpDebug) {
                 console.groupEnd()
                 console.log(destTime)
             }
@@ -910,7 +928,7 @@ var videoPlayer = {
     }
 }
 
-'#player-rev'.assignClick(()=>{
+'#player-rev'.assignClick(() => {
     videoPlayer.seek(-5)
 })
 '#player-forw'.assignClick(() => {
@@ -936,7 +954,7 @@ var modal = {
         },
         openfile: {
             id: 'openfile',
-            onOpen: function(){
+            onOpen: function() {
                 openFile.el.textBox.select()
             }
         }
@@ -964,7 +982,7 @@ var modal = {
             setTimeout(() => {
                 theElement.classList.remove('fadeout')
                 let modelInf = this.custom[target]
-                if(modelInf != undefined && modelInf.onOpen != undefined){
+                if (modelInf != undefined && modelInf.onOpen != undefined) {
                     modelInf.onOpen()
                 }
             }, 10)
@@ -1015,24 +1033,24 @@ if (navigator.userAgent.indexOf('Firefox') == -1) {
 
 var history = {
     cur: '',
-    setup: function(obj){
-        if(settings.localStorage){
+    setup: function(obj) {
+        if (settings.localStorage) {
             let a = localStorage.getItem('VNHistory')
-            if(a){
-                this.cur=a
-                document.querySelector('#history-btn').innerHTML=a
+            if (a) {
+                this.cur = a
+                document.querySelector('#history-btn').innerHTML = a
                 document.querySelector('#history').classList.remove('hidden')
             }
         }
     },
-    change: function(str){
+    change: function(str) {
         if (settings.localStorage) {
-            localStorage.setItem('VNHistory',str)
+            localStorage.setItem('VNHistory', str)
             this.setup()
         }
     }
 }
-'#history-btn'.assignClick((event)=>{
+'#history-btn'.assignClick((event) => {
     openFile.el.textBox.value = history.cur
     onSubmitVideoURL()
 })
@@ -1040,26 +1058,26 @@ history.setup()
 
 var share = {
     service: 'https://smallg0at.github.io/VideoNotes/VideoNotes.html',
-    establish: function(){
-        if(history.cur != ''){
-            var shareURI = this.service+'?query='+history.cur
+    establish: function() {
+        if (history.cur != '') {
+            var shareURI = this.service + '?query=' + history.cur
             var url = new URL(shareURI)
             this.copy(url.href)
-        }else{
+        } else {
             this.copy(this.service)
         }
     },
-    copy: function(uri){
-        if(settings.usingNW){
+    copy: function(uri) {
+        if (settings.usingNW) {
             nwClip.set(uri, 'text')
-        }else{
+        } else {
             navigator.clipboard.writeText(uri)
         }
         alert('似乎已复制分享链接（视频为最近一次观看的在线视频），可粘贴查看。')
     }
 }
-'#sharelink'.assignClick(()=>{
-    if(!settings.isIE){
+'#sharelink'.assignClick(() => {
+    if (!settings.isIE) {
         share.establish()
     }
 })
@@ -1073,25 +1091,25 @@ setTimeout(() => {
     if (!DEBUGMODE.devAction) {
         document.querySelector('#load-cover').parentElement.removeChild(document.querySelector('#load-cover'))
     }
-    if(isFirstRun){
+    if (isFirstRun) {
         modal.open('welcome')
     }
 
 }, 1000);
 
-if(settings.usingNW || navigator.userAgent.toLowerCase().indexOf('windows') == -1){
+if (settings.usingNW || navigator.userAgent.toLowerCase().indexOf('windows') == -1) {
     document.querySelector('#dl-desktop').classList.add('hidden')
 }
-'#dl-desktop'.assignClick(()=>{
+'#dl-desktop'.assignClick(() => {
     window.open('https://github.com/smallg0at/VideoNotes/releases/latest/')
 })
 
-setTimeout(()=>{
+setTimeout(() => {
     if (!settings.isIE && URIDetector.hasParam) {
         openFile.el.textBox.value = URIDetector.param
         onSubmitVideoURL()
     }
-},3000)
+}, 3000)
 if (DEBUGMODE.devAction) {
     document.querySelector('#load-cover').parentElement.removeChild(document.querySelector('#load-cover'))
 }
