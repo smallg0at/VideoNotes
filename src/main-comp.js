@@ -1,4 +1,4 @@
-'use strict'; //info: this should be written with compatibility.
+'use strict'; //info: this should be written with compatibility, as IE users will face this.
 
 var _this3 = void 0;
 
@@ -11,7 +11,7 @@ var DEBUGMODE = {
   timefilterDebug: false,
   jumpDebug: false
 };
-var version = "1.9.1";
+var version = "1.9.2";
 var settings = {
   isIE: false,
   localStorage: true,
@@ -90,6 +90,7 @@ var settingUtils = {
       settings.localStorage = false;
     },
     checkIfIE: function checkIfIE() {
+      // Check if IE. Used often later for compatibility.
       if (navigator.userAgent.indexOf('Trident') != -1 && navigator.userAgent.indexOf('Edge') == -1) {
         console.log(navigator.userAgent);
         settings.isIE = true;
@@ -151,10 +152,26 @@ if (settings.usingNW) {
 } else {} //do nothing
 // console.log('ran script')
 
+/*
+* This is the main script, containing every module working
+* for the player and gui.
+*
+* Classes are here as objects, which is used because I don't
+* need extensibility.
+*/
+
 
 document.querySelector('video').src = "";
 var textareaItem = document.querySelector('textarea');
-var frameCount = 0;
+var frameCount = 0; // Importing everything from the settings panel
+
+/*
+* Click assigner
+* Usage:
+* (query: string).assignClick((event)=>{
+*  // do something
+* })
+*/
 
 String.prototype.assignClick = function (func) {
   var a = document.querySelector(this);
@@ -162,7 +179,8 @@ String.prototype.assignClick = function (func) {
   a.onclick = function (event) {
     func(event);
   };
-};
+}; // URL doesn't work for IE, so bypass.
+
 
 if (!settings.isIE) {
   var URIDetector = {
@@ -200,6 +218,7 @@ var gui = {
   },
   mode: '',
   updateRightHeight: function updateRightHeight() {
+    //Update the notes's height on phones
     if (window.matchMedia("(orientation: portrait)").matches == true) {
       var leftComp = window.getComputedStyle(document.querySelector('.left'));
       var leftHeight = parseInt(leftComp.getPropertyValue('height'));
@@ -211,14 +230,19 @@ var gui = {
   setInnerIcon: function setInnerIcon(query, iconName) {
     var extraLabel = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     var important = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+    // Inject an icon to an interaction.
+    // query: query string, icnoName: Fluent UI Core icon name,
+    // extralabel: descriptive text on right, and important to display it on phone.
     document.querySelector(query).innerHTML = "<i class=\"ms-Icon ms-Icon--".concat(iconName, "\" aria-hidden=\"true\"></i>").concat(extraLabel ? "<iconlabel".concat(important ? ' class="important"' : '', ">").concat(extraLabel, "</iconlabel>") : '');
   },
   toggleContextMenu: function toggleContextMenu() {
+    // Toggle the context menu.
     // document.querySelector('#more-options').classList.toggle('hidden')
     document.querySelector('#more-options').parentElement.classList.toggle('isopen');
   },
   windowIsOnTop: false,
   toggleOnTop: function toggleOnTop() {
+    // Toggle if always on top. nw.js ONLY.
     nwWindow.setAlwaysOnTop(!this.windowIsOnTop);
     this.windowIsOnTop = !this.windowIsOnTop;
     gui.setInnerIcon('#winontop', this.windowIsOnTop ? 'CheckboxComposite' : 'Checkbox', '窗口置顶', true);
@@ -269,6 +293,7 @@ var gui = {
     }
   },
   loadIndicator: {
+    //controls the load indicator, with animations
     show: function show() {
       if (!settings.isIE) {
         document.querySelector('#iframe-loading').classList.remove('hidden');
@@ -284,7 +309,8 @@ var gui = {
       }, 1050);
     }
   }
-};
+}; // assign triggers
+
 window.onresize = gui.updateRightHeight();
 '#fullscreen'.assignClick(function () {
   return gui.fullscreen.toggle();
@@ -328,6 +354,7 @@ var notes = {
   activeTimeout: -1,
   item: function item() {
     var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    // Return the nth textarea. Cut feature.
     return document.querySelectorAll('textarea').item(id);
   },
   load: function load() {
@@ -344,7 +371,7 @@ var notes = {
     var _this = this;
 
     var force = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-    var alwaysLight = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    // light it up. force: will force it to light up infinitely till next trigger
     this.save();
     this.container.classList.add('isactive');
 
@@ -430,6 +457,7 @@ var openFile = {
   },
   open: {
     local: function local() {
+      // Tries to open a local file.
       var selectedFile = openFile.el.filePicker.files.item(0);
       console.log(selectedFile);
       var name = selectedFile.name,
@@ -440,6 +468,7 @@ var openFile = {
       document.querySelector('#file-info').classList.toggle('hidden');
 
       if (settings.enableBruteForce) {
+        // Bruteforce mode: for fun, and is buggy. Opening up 100MB+ files will cause explotion.
         var reader = new FileReader(); //这是核心,读取操作就是由它完成.
 
         console.log('BruteForce: init');
@@ -494,14 +523,16 @@ var shortcut = {
     alt: false
   },
   add: function add(key, func) {
+    // add a combination. Use in following order: ctrl, shift, alt or it won't work.
     return this.list.set(key.toLocaleLowerCase(), func);
   },
   check: function check(key) {
     return this.list.has(key);
   },
-  apply: function apply() {
+  listen: function listen() {
     var _this2 = this;
 
+    // set up the listener.
     document.onkeyup = function (event) {
       if (DEBUGMODE.keypress) {
         console.log('KEYUP:', event);
@@ -693,7 +724,7 @@ var shortcut = {
   shortcut.add('ctrl+]', function () {
     notes.isAlwaysOn = !notes.isAlwaysOn;
   });
-  shortcut.apply();
+  shortcut.listen();
 }
 
 document.onkeydown = function (event) {
@@ -707,15 +738,34 @@ document.onkeydown = function (event) {
 };
 
 notes.setActive();
+
+function calculateTimeString(time) {
+  // a typical time generator, sample: 121 => 2:01. Support up to hours level.
+  var playbackCounter = [0, 0, 0];
+  playbackCounter[2] = Math.floor(time % 60);
+  playbackCounter[1] = Math.floor(time / 60);
+
+  while (playbackCounter[1] >= 60) {
+    playbackCounter[1] -= 60;
+    playbackCounter[0]++;
+  }
+
+  var fnstr = '';
+  fnstr = playbackCounter[0] > 0 ? playbackCounter[0] + ':' : '';
+  fnstr = fnstr.concat(playbackCounter[0] > 0 && playbackCounter[1] < 10 ? '0' : '' + playbackCounter[1] + ':');
+  fnstr = fnstr.concat((playbackCounter[2] >= 10 ? '' : '0') + playbackCounter[2]);
+  return fnstr;
+}
+
 setInterval(function () {
   //refreshes every 100ms, setting time bar
   if (frameCount >= 0) {
     if (videoPlayer.isAvailable) {
       var mediaPlayback = videoPlayer.el;
-      document.querySelector('#play-length').setAttribute('style', 'width: ' + (mediaPlayback.currentTime / mediaPlayback.duration * 100).toFixed(2) + '%;');
-      var existstr = Math.floor(mediaPlayback.currentTime / 60) + ':' + Math.floor(mediaPlayback.currentTime % 60);
-      var totalstr = Math.floor(mediaPlayback.duration / 60) + ':' + Math.floor(mediaPlayback.duration % 60);
-      document.querySelector('.media-playback-timing').innerHTML = existstr + ' / ' + totalstr;
+      document.querySelector('#play-length').setAttribute('style', 'width: ' + (mediaPlayback.currentTime / mediaPlayback.duration * 100).toFixed(2) + '%;'); // let existstr = Math.floor(mediaPlayback.currentTime / 60) + ':' + Math.floor(mediaPlayback.currentTime % 60)
+      // let totalstr = Math.floor(mediaPlayback.duration / 60) + ':' + Math.floor(mediaPlayback.duration % 60)
+
+      document.querySelector('.media-playback-timing').innerHTML = calculateTimeString(mediaPlayback.currentTime) + ' / ' + calculateTimeString(mediaPlayback.duration);
     }
   }
 
@@ -731,6 +781,7 @@ window.onbeforeunload = function () {
 
 function videoUrlParser() {
   var url = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : new String();
+  //Parse the URL for good. RUBBISH CODE AHEAD!!!
   var targetURL;
   var lowURL = url.toLocaleLowerCase();
 
@@ -945,6 +996,8 @@ webFrame.el.contentWindow.onerror = function () {
 
 function onSubmitVideoURL() {
   var frame = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  // runs as user submit their link.
+  // frame: boolean: force it as webpage.
   var inputURL = openFile.el.textBox.value;
 
   if (inputURL) {
@@ -1252,8 +1305,11 @@ var modal = {
 modal.init();
 
 if (navigator.userAgent.indexOf('Firefox') == -1) {
-  modal.open('welcome'); //Temporary fix for rendering issue
-
+  //Temporary fix for rendering issue.
+  // Chromium will lag a lot whan rendering welcome,
+  // so preload it while users are waiting is a good idea.
+  // I'll say firefox does it very smoothly.
+  modal.open('welcome');
   modal.close('welcome');
   console.info('Doing settings workaround'); // document.querySelector('modal#settings').classList.add('fadeout')
 }
@@ -1285,6 +1341,7 @@ var history = {
 history.setup();
 var share = {
   service: 'https://smallg0at.github.io/VideoNotes/VideoNotes.html',
+  // The service the user is currently using.
   establish: function establish() {
     if (history.cur != '') {
       var shareURI = this.service + '?query=' + history.cur;
@@ -1332,12 +1389,15 @@ if (settings.usingNW || navigator.userAgent.toLowerCase().indexOf('windows') == 
 });
 setTimeout(function () {
   if (!settings.isIE && URIDetector.hasParam) {
+    // open up the video. Users will have to take notice of
+    // what they are watching.
     openFile.el.textBox.value = URIDetector.param;
     onSubmitVideoURL();
   }
-}, 3000);
+}, 3500);
 
 if (DEBUGMODE.devAction) {
+  // remove the cover as soon as the script done working. dbg use only!
   document.querySelector('#load-cover').parentElement.removeChild(document.querySelector('#load-cover'));
 }
 

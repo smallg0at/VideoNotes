@@ -10,7 +10,7 @@ const DEBUGMODE = {
     timefilterDebug: false,
     jumpDebug: false
 }
-const version="1.9.1"
+const version="1.9.2"
 var settings = {
     isIE: false,
     localStorage: true,
