@@ -6,6 +6,7 @@
   "scripts": {
     "babel": "node ./babelgen.js",
     "dist": "build --tasks win-x64 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
+    "distmac": "build --tasks mac-x64 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
     "dist32": "build --tasks win-x86 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
     "start": "run --x64 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
     "start32": "run --x86 --mirror https://npm.taobao.org/mirrors/nwjs/ ."
@@ -30,6 +31,10 @@
         "SimpChinese",
         "English"
       ]
+    },
+    "mac": {
+      "icon": "./res/VNIcon.icns",
+      "documentIcon": "./res/VNIcon.icns"
     }
   },
   "node-remote": [
