@@ -1060,7 +1060,11 @@ var modal = {
 }
 modal.init();
 if (navigator.userAgent.indexOf('Firefox') == -1) {
-    modal.open('welcome') //Temporary fix for rendering issue
+    //Temporary fix for rendering issue.
+    // Chromium will lag a lot whan rendering welcome,
+    // so preload it while users are waiting is a good idea.
+    // I'll say firefox does it very smoothly.
+    modal.open('welcome')
     modal.close('welcome')
     console.info('Doing settings workaround')
     // document.querySelector('modal#settings').classList.add('fadeout')
