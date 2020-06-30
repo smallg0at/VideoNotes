@@ -32,7 +32,7 @@ b = strb.lastIndexOf('pasteNew')
 let flag = false
 for (let i = b; i < strb.length; i++) {
     const element = strb[i];
-    if(element == '》'){
+    if (element == '◫') {
         flag = true
     }
     if (element == '}' && flag) {

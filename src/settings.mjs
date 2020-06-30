@@ -1,5 +1,5 @@
 'use strict';
-//info: this should be written with compatibility.
+//info: this should be written with compatibility, as IE users will face this.
 
 const DEBUGMODE = {
     keypress: false,
@@ -83,6 +83,7 @@ var settingUtils = {
             settings.localStorage = false;
         },
         checkIfIE: function() {
+            // Check if IE. Used often later for compatibility.
             if (navigator.userAgent.indexOf('Trident') != -1 && navigator.userAgent.indexOf('Edge') == -1) {
                 console.log(navigator.userAgent)
                 settings.isIE = true

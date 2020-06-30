@@ -1,9 +1,19 @@
 'use strict';
 // console.log('ran script')
+
+/*
+* This is the main script, containing every module working
+* for the player and gui.
+*
+* Classes are here as objects, which is used because I don't
+* need extensibility.
+*/
 document.querySelector('video').src = "";
 var textareaItem = document.querySelector('textarea');
 var frameCount = 0;
 
+
+// Importing everything from the settings panel
 import {
     settings,
     DEBUGMODE,
@@ -13,6 +23,13 @@ import {
     isFirstRun
 } from './settings.mjs'
 
+/*
+* Click assigner
+* Usage:
+* (query: string).assignClick((event)=>{
+*  // do something
+* })
+*/
 String.prototype.assignClick = function(func) {
     let a = document.querySelector(this);
     a.onclick = function(event) {
@@ -20,6 +37,7 @@ String.prototype.assignClick = function(func) {
     }
 }
 
+// URL doesn't work for IE, so bypass.
 if (!settings.isIE) {
     var URIDetector = {
         url: new URL(location.href),
@@ -54,7 +72,7 @@ var gui = {
         right: document.querySelector('.right')
     },
     mode: '',
-    updateRightHeight: function() {
+    updateRightHeight: function() {//Update the notes's height on phones
         if (window.matchMedia("(orientation: portrait)").matches == true) {
             let leftComp = window.getComputedStyle(document.querySelector('.left'))
             let leftHeight = parseInt(leftComp.getPropertyValue('height'))
@@ -64,14 +82,19 @@ var gui = {
         }
     },
     setInnerIcon: function(query, iconName, extraLabel = null, important = false) {
+        // Inject an icon to an interaction.
+        // query: query string, icnoName: Fluent UI Core icon name,
+        // extralabel: descriptive text on right, and important to display it on phone.
         document.querySelector(query).innerHTML = `<i class="ms-Icon ms-Icon--${iconName}" aria-hidden="true"></i>${(extraLabel ? `<iconlabel${(important ? ' class="important"' : '')}>${extraLabel}</iconlabel>` : '')}`
     },
     toggleContextMenu: function() {
+        // Toggle the context menu.
         // document.querySelector('#more-options').classList.toggle('hidden')
         document.querySelector('#more-options').parentElement.classList.toggle('isopen')
     },
     windowIsOnTop: false,
     toggleOnTop: function() {
+        // Toggle if always on top. nw.js ONLY.
         nwWindow.setAlwaysOnTop(!this.windowIsOnTop)
         this.windowIsOnTop = !this.windowIsOnTop
         gui.setInnerIcon('#winontop', (this.windowIsOnTop ? 'CheckboxComposite' : 'Checkbox'), '窗口置顶', true)
@@ -122,7 +145,7 @@ var gui = {
             }
         },
     },
-    loadIndicator: {
+    loadIndicator: {//controls the load indicator, with animations
         show: function() {
             if (!settings.isIE) {
                 document.querySelector('#iframe-loading').classList.remove('hidden')
@@ -139,6 +162,7 @@ var gui = {
         }
     }
 }
+// assign triggers
 window.onresize = gui.updateRightHeight()
 '#fullscreen'.assignClick(() => gui.fullscreen.toggle())
 '#context-toggle'.assignClick(() => gui.toggleContextMenu())
@@ -177,6 +201,7 @@ var notes = {
     isAlwaysOn: false,
     activeTimeout: -1,
     item: (id = 0) => {
+        // Return the nth textarea. Cut feature.
         return document.querySelectorAll('textarea').item(id)
     },
     load: () => {
@@ -189,7 +214,8 @@ var notes = {
             localStorage.videoNotes = textareaItem.value
         }
     },
-    setActive: function(force = false, alwaysLight = false) {
+    setActive: function(force = false) {
+        // light it up. force: will force it to light up infinitely till next trigger
         this.save()
         this.container.classList.add('isactive');
         try {
@@ -266,12 +292,14 @@ var openFile = {
                     document.querySelector('#URLpaste').classList.add('hidden')
                     console.info('CLIPBOARD Denied', err)
                 });
-            //》
+            // The symbol below is used by the babel command, don't delete
+            //◫
         }
 
     },
     open: {
         local: function() {
+            // Tries to open a local file.
             var selectedFile = openFile.el.filePicker.files.item(0)
             console.log(selectedFile)
             var {
@@ -283,6 +311,7 @@ var openFile = {
             document.querySelector('#file-info').innerHTML = `⏳ ${name}（${(size/1000000).toFixed(1)}MB）${(settings.enableBruteForce?' 正在加载中...':'')} ${size >= 100000000 && settings.enableBruteForce?'<br>文件过大，可能加载失败或页面崩溃。':''}`
             document.querySelector('#file-info').classList.toggle('hidden')
             if (settings.enableBruteForce) {
+                // Bruteforce mode: for fun, and is buggy. Opening up 100MB+ files will cause explotion.
                 var reader = new FileReader(); //这是核心,读取操作就是由它完成.
                 console.log('BruteForce: init')
                 reader.readAsDataURL(selectedFile)
@@ -330,12 +359,14 @@ var shortcut = {
         alt: false,
     },
     add: function(key, func) {
+        // add a combination. Use in following order: ctrl, shift, alt or it won't work.
         return this.list.set(key.toLocaleLowerCase(), func)
     },
     check: function(key) {
         return this.list.has(key)
     },
-    apply: function() {
+    listen: function() {
+        // set up the listener.
         document.onkeyup = (event) => {
             if (DEBUGMODE.keypress) {
                 console.log('KEYUP:', event)
@@ -504,7 +535,7 @@ var shortcut = {
 
 
 
-    shortcut.apply()
+    shortcut.listen()
 }
 
 
@@ -520,6 +551,7 @@ document.onkeydown = (event) => {
 notes.setActive()
 
 function calculateTimeString(time) {
+    // a typical time generator, sample: 121 => 2:01. Support up to hours level.
     let playbackCounter = [0, 0, 0]
     playbackCounter[2] = Math.floor(time % 60)
 
@@ -558,6 +590,7 @@ window.onbeforeunload = () => {
 
 
 function videoUrlParser(url = new String()) {
+    //Parse the URL for good. RUBBISH CODE AHEAD!!!
     let targetURL;
     let lowURL = url.toLocaleLowerCase()
     if ((lowURL.startsWith('av') || lowURL.startsWith('bv') || url.indexOf('www.bilibili.com/video/') != -1 || url.indexOf('b23.tv/') != -1) && (!url.startsWith('||'))) {
@@ -751,6 +784,8 @@ webFrame.el.contentWindow.onerror = function() {
 }
 
 function onSubmitVideoURL(frame = false) {
+    // runs as user submit their link.
+    // frame: boolean: force it as webpage.
     let inputURL = openFile.el.textBox.value
     if (inputURL) {
         if (frame) {
@@ -1058,6 +1093,7 @@ history.setup()
 
 var share = {
     service: 'https://smallg0at.github.io/VideoNotes/VideoNotes.html',
+    // The service the user is currently using.
     establish: function() {
         if (history.cur != '') {
             var shareURI = this.service + '?query=' + history.cur
@@ -1106,11 +1142,14 @@ if (settings.usingNW || navigator.userAgent.toLowerCase().indexOf('windows') == 
 
 setTimeout(() => {
     if (!settings.isIE && URIDetector.hasParam) {
+        // open up the video. Users will have to take notice of
+        // what they are watching.
         openFile.el.textBox.value = URIDetector.param
         onSubmitVideoURL()
     }
-}, 3000)
+}, 3500)
 if (DEBUGMODE.devAction) {
+    // remove the cover as soon as the script done working. dbg use only!
     document.querySelector('#load-cover').parentElement.removeChild(document.querySelector('#load-cover'))
 }
 notes.onFinishLoad()
