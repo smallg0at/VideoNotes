@@ -7,6 +7,10 @@
 
 A web-based application created for those who take notes while watching video.
 
+**This project is no longer being actively maintained.**
+
+\*Language Support: only Chinese (Simplified) is supported.
+
 ![GitHub All Releases](https://img.shields.io/github/downloads/smallg0at/VideoNotes/total?style=flat-square)
 ![GitHub](https://img.shields.io/github/license/smallg0at/VideoNotes?style=flat-square)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/smallg0at/videonotes?style=flat-square)
