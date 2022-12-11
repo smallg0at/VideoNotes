@@ -1,3 +1,10 @@
+### **This project is no longer being actively maintained.**
+
+This Project is still usable to this day (all features are there), but will no longer be maintained due to lack of interest.
+
+There will only be security fixes by Github Dependabot that will (probably) never be actually compiled.
+
+---
 
 <img src="./res/VideoNotes.png" width="150" align="right" style="z-index: 100">
 
@@ -7,7 +14,7 @@
 
 A web-based application created for those who take notes while watching video.
 
-**This project is no longer being actively maintained.**
+
 
 \*Language Support: only Chinese (Simplified) is supported.
 
@@ -16,7 +23,7 @@ A web-based application created for those who take notes while watching video.
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/smallg0at/videonotes?style=flat-square)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/smallg0at/videonotes?style=flat-square)
 
-📥 [从 GitHub Release 下载最新版（推荐，Windows） \| Download with GitHub Release](https://github.com/smallg0at/VideoNotes/releases)
+📥 [从 GitHub Release 下载最新版（推荐，Windows x64） \| Download with GitHub Release](https://github.com/smallg0at/VideoNotes/releases)
 
 🌐 [使用最新的在线版本 \| Use Current Online (Standalone) Edition](https://smallg0at.github.io/VideoNotes/VideoNotes.html)
 
@@ -30,7 +37,7 @@ A web-based application created for those who take notes while watching video.
     - Microsoft Stream
     - Youtube
 - Support .pdf, .html opening as well as websites that allow iframe.
-- Simplistic Design
+- Very Simplistic Design
 - Non-distractive notes display
 - nw.js support
 
@@ -38,7 +45,7 @@ A web-based application created for those who take notes while watching video.
 
 ### Browser
 
-simply serve on a server, and change the share.service on main.mjs.
+simply serve on a server, and modify `share.service` on main.mjs.
 
 Internet Explorer is supported, but its scripts should be compiled from main.mjs with `npm run babel` first.
 
