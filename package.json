@@ -55,7 +55,7 @@
   "author": "Jerry Liu",
   "license": "MIT",
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
+    "@babel/cli": "^7.19.3",
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
     "eslint": "^6.8.0",
