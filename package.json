@@ -5,11 +5,11 @@
   "main": "VideoNotes.html",
   "scripts": {
     "babel": "node ./babelgen.js",
-    "dist": "build --tasks win-x64 --mirror https://dl.nwjs.io/ .",
-    "distmac": "build --tasks mac-x64 --mirror https://dl.nwjs.io/ .",
-    "dist32": "build --tasks win-x86 --mirror https://dl.nwjs.io/ .",
-    "start": "run --x64 --mirror https://dl.nwjs.io/ .",
-    "start32": "run --x86 --mirror https://dl.nwjs.io/ ."
+    "dist": "nwbuild --mode=package --version=0.44.6 --flavor=sdk --platform=win --arch=x64 --downloadUrl=https://dl.nwjs.io --glob=false .",
+    "distmac": "nwbuild --mode=package --version=0.44.6 --flavor=sdk --platform=osx --arch=x64 --downloadUrl=https://dl.nwjs.io --glob=false .",
+    "dist32": "nwbuild --mode=package --version=0.44.6 --flavor=sdk --platform=win --arch=x86 --downloadUrl=https://dl.nwjs.io --glob=false .",
+    "start": "nwbuild --mode=run --version=0.44.6 --flavor=sdk --downloadUrl=https://dl.nwjs.io --glob=false .",
+    "start32": "nwbuild --mode=run --version=0.44.6 --flavor=sdk --arch=x86 --downloadUrl=https://dl.nwjs.io --glob=false ."
   },
   "build": {
     "nwVersion": "0.44.6",
@@ -51,7 +51,7 @@
     "@babel/cli": "^7.29.7",
     "@babel/core": "^7.29.7",
     "@babel/preset-env": "^7.29.7",
-    "nwjs-builder-phoenix": "^1.15.0"
+    "nw-builder": "^4.24.0"
   },
   "dependencies": {
     "babel-plugin-loop-optimizer": "^1.4.1",
