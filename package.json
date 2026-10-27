@@ -5,11 +5,11 @@
   "main": "VideoNotes.html",
   "scripts": {
     "babel": "node ./babelgen.js",
-    "dist": "build --tasks win-x64 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
-    "distmac": "build --tasks mac-x64 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
-    "dist32": "build --tasks win-x86 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
-    "start": "run --x64 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
-    "start32": "run --x86 --mirror https://npm.taobao.org/mirrors/nwjs/ ."
+    "dist": "nwbuild --mode=package --version=0.44.6 --flavor=sdk --platform=win --arch=x64 --downloadUrl=https://dl.nwjs.io --glob=false .",
+    "distmac": "nwbuild --mode=package --version=0.44.6 --flavor=sdk --platform=osx --arch=x64 --downloadUrl=https://dl.nwjs.io --glob=false .",
+    "dist32": "nwbuild --mode=package --version=0.44.6 --flavor=sdk --platform=win --arch=x86 --downloadUrl=https://dl.nwjs.io --glob=false .",
+    "start": "nwbuild --mode=run --version=0.44.6 --flavor=sdk --downloadUrl=https://dl.nwjs.io --glob=false .",
+    "start32": "nwbuild --mode=run --version=0.44.6 --flavor=sdk --arch=x86 --downloadUrl=https://dl.nwjs.io --glob=false ."
   },
   "build": {
     "nwVersion": "0.44.6",
@@ -37,13 +37,6 @@
       "documentIcon": "./res/VNIcon.icns"
     }
   },
-  "node-remote": [
-    "https://player.bilibili.com/*",
-    "*://xbeibeix.com/*",
-    "https://*.acfun.cn/player/*",
-    "*://web.microsoftstream.com/*",
-    "*://youtube.com/*"
-  ],
   "user-agent": "VideoNotes/%ver(%osinfo)",
   "window": {
     "show": true,
@@ -55,14 +48,29 @@
   "author": "Jerry Liu",
   "license": "MIT",
   "devDependencies": {
-    "@babel/cli": "^7.19.3",
-    "@babel/core": "^7.9.0",
-    "@babel/preset-env": "^7.9.5",
-    "eslint": "^6.8.0",
-    "nwjs-builder-phoenix": "^1.15.0"
+    "@babel/cli": "^7.29.7",
+    "@babel/core": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
+    "nw-builder": "^4.24.0"
   },
   "dependencies": {
     "babel-plugin-loop-optimizer": "^1.4.1",
-    "localforage": "^1.7.3"
+    "localforage": "^1.10.0"
+  },
+  "overrides": {
+    "ansi-regex": "^5.0.1",
+    "brace-expansion": "^5.0.4",
+    "cross-spawn": "^7.0.6",
+    "debug": "^4.4.1",
+    "flatted": "^3.3.3",
+    "js-yaml": "^4.1.1",
+    "lodash": "^4.17.21",
+    "minimatch": "^10.0.3",
+    "qs": "^6.14.0",
+    "semver": "^7.7.2",
+    "tough-cookie": "^5.1.2",
+    "tmp": "^0.2.4",
+    "word-wrap": "^1.2.5",
+    "xmldom": "^0.6.0"
   }
 }

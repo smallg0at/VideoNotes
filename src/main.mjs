@@ -48,7 +48,7 @@ if (!settings.isIE) {
     if (URIDetector.hasParam) {
         URIDetector.param = URIDetector.url.searchParams.get('query')
         document.querySelector('#parameter').classList.remove('hidden')
-        document.querySelector('#parameter>info').innerHTML = '您正在用链接打开 ' + URIDetector.param + ' 。'
+        document.querySelector('#parameter>info').textContent = '您正在用链接打开 ' + URIDetector.param + ' 。'
     }
     '#param-btn'.assignClick(() => {
         window.open(URIDetector.url.pathname, '_self')
@@ -591,6 +591,27 @@ window.onbeforeunload = () => {
 
 function videoUrlParser(url = new String()) {
     //Parse the URL for good. RUBBISH CODE AHEAD!!!
+    if (typeof url !== 'string' || !url.trim()) {
+        return {
+            mode: 'error',
+            error: '请输入有效链接。'
+        }
+    }
+    url = url.trim()
+    if (url.startsWith('||')) {
+        let frameURL = url.slice(2).trim()
+        try {
+            let parsedFrameURL = new URL(frameURL)
+            if (!['http:', 'https:'].includes(parsedFrameURL.protocol)) {
+                throw new Error('Unsupported protocol')
+            }
+        } catch (error) {
+            return {
+                mode: 'error',
+                error: '仅支持通过 HTTP(S) 加载网页。'
+            }
+        }
+    }
     let targetURL;
     let lowURL = url.toLocaleLowerCase()
     if ((lowURL.startsWith('av') || lowURL.startsWith('bv') || url.indexOf('www.bilibili.com/video/') != -1 || url.indexOf('b23.tv/') != -1) && (!url.startsWith('||'))) {
@@ -790,7 +811,7 @@ function onSubmitVideoURL(frame = false) {
     if (inputURL) {
         if (frame) {
             if (inputURL.indexOf('://') == -1) {
-                inputURL = 'http://' + inputURL
+                inputURL = 'https://' + inputURL
             }
             inputURL = '||' + inputURL
         }
