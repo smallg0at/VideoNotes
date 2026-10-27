@@ -1,7 +1,7 @@
-'use strict'; //info: this should be written with compatibility, as IE users will face this.
+'use strict';
 
+//info: this should be written with compatibility, as IE users will face this.
 var _this3 = void 0;
-
 var DEBUGMODE = {
   keypress: false,
   inspectGeneratedURL: false,
@@ -30,34 +30,28 @@ var settingUtils = {
     if (settings.localStorage) {
       if (localStorage.VNSettings != 'null' && localStorage.VNSettings) {
         settings = JSON.parse(localStorage.VNSettings);
-
         if (DEBUGMODE.setting) {
           console.log('READ:', JSON.parse(localStorage.VNSettings));
         }
       } else {
         localStorage.VNSettings = JSON.stringify(settings);
-
         if (DEBUGMODE.setting) {
           console.log('READ:FW', JSON.parse(localStorage.VNSettings));
         }
       }
-
       this.onRead();
     }
   },
   onRead: function onRead() {
     document.querySelector('#bilibili-ext').selectedIndex = settings.allowExperimentalAPI.bilibili;
-
     document.querySelector('#bilibili-ext').onchange = function () {
       settings.allowExperimentalAPI.bilibili = document.querySelector('#bilibili-ext').selectedIndex;
       settingUtils.write();
     };
-
     if (settings.enableBruteForce) {
       console.log();
       document.querySelector('#enable-force-method').checked = true;
     }
-
     document.querySelector('#enable-force-method').onchange = function () {
       settings.enableBruteForce = document.querySelector('#enable-force-method').checked;
       settingUtils.write();
@@ -66,7 +60,6 @@ var settingUtils = {
   write: function write() {
     if (settings.localStorage) {
       localStorage.VNSettings = JSON.stringify(settings);
-
       if (DEBUGMODE.setting) {
         console.log('WRITE:', JSON.parse(localStorage.VNSettings));
       }
@@ -101,7 +94,8 @@ var settingUtils = {
         localStorage.getItem('videoNotes');
       } catch (e) {
         this.onDisableLocalStorage();
-        console.info('LocalStorage is now DISABLED due to exception'); // console.warn(e)
+        console.info('LocalStorage is now DISABLED due to exception');
+        // console.warn(e)
       }
     },
     grantClipboard: function grantClipboard() {
@@ -133,23 +127,23 @@ settingUtils.read();
 settingUtils.interaction.checkIfIE();
 settingUtils.interaction.checkPasteAPI();
 settingUtils.interaction.checkNW();
-
 if (version != settings.lastUsedVersion) {
   isFirstRun = true;
   console.log('isFirstRun:', settings.lastUsedVersion);
   settings.lastUsedVersion = version;
 }
-
 settingUtils.write();
 var nwWindow = null;
 var nwClip = null;
-
 if (settings.usingNW) {
   nwWindow = nw.Window.get();
   nwClip = nw.Clipboard.get();
   nwWindow.show(true);
   nwWindow.focus();
-} else {} //do nothing
+} else {
+  //do nothing
+}
+
 // console.log('ran script')
 
 /*
@@ -159,11 +153,11 @@ if (settings.usingNW) {
 * Classes are here as objects, which is used because I don't
 * need extensibility.
 */
-
-
 document.querySelector('video').src = "";
 var textareaItem = document.querySelector('textarea');
-var frameCount = 0; // Importing everything from the settings panel
+var frameCount = 0;
+
+// Importing everything from the settings panel
 
 /*
 * Click assigner
@@ -172,16 +166,14 @@ var frameCount = 0; // Importing everything from the settings panel
 *  // do something
 * })
 */
-
 String.prototype.assignClick = function (func) {
   var a = document.querySelector(this);
-
   a.onclick = function (event) {
     func(event);
   };
-}; // URL doesn't work for IE, so bypass.
+};
 
-
+// URL doesn't work for IE, so bypass.
 if (!settings.isIE) {
   var URIDetector = {
     url: new URL(location.href),
@@ -189,28 +181,23 @@ if (!settings.isIE) {
     param: ''
   };
   URIDetector.hasParam = URIDetector.url.searchParams.has('query');
-
   if (URIDetector.hasParam) {
     URIDetector.param = URIDetector.url.searchParams.get('query');
     document.querySelector('#parameter').classList.remove('hidden');
-    document.querySelector('#parameter>info').innerHTML = '您正在用链接打开 ' + URIDetector.param + ' 。';
+    document.querySelector('#parameter>info').textContent = '您正在用链接打开 ' + URIDetector.param + ' 。';
   }
-
   '#param-btn'.assignClick(function () {
     window.open(URIDetector.url.pathname, '_self');
   });
 } else {
   document.querySelector('#sharelink').classList.add('hidden');
 }
-
 '#reset-everything'.assignClick(function (event) {
   settingUtils.reset();
 });
-
 if (settings.usingNW) {
   document.querySelector('#is-app').textContent = "本地应用。";
 }
-
 var gui = {
   el: {
     left: document.querySelector('.left'),
@@ -251,11 +238,12 @@ var gui = {
     toggle: function toggle() {
       if (settings.usingNW) {
         nwWindow.toggleFullscreen();
-
         if (!nwWindow.isFullscreen) {
-          gui.setInnerIcon('#fullscreen', 'BackToWindow', '退出全屏 (f)', true); // document.querySelector('#fullscreen').innerHTML = "退出全屏"
+          gui.setInnerIcon('#fullscreen', 'BackToWindow', '退出全屏 (f)', true);
+          // document.querySelector('#fullscreen').innerHTML = "退出全屏"
         } else {
-          gui.setInnerIcon('#fullscreen', 'FullScreen', '全屏 (f)', true); // document.querySelector('#fullscreen').innerHTML = "全屏"
+          gui.setInnerIcon('#fullscreen', 'FullScreen', '全屏 (f)', true);
+          // document.querySelector('#fullscreen').innerHTML = "全屏"
         }
       } else {
         if (document.fullscreenElement || document.msFullscreenElement) {
@@ -284,11 +272,12 @@ var gui = {
     onChange: function onChange() {
       var forceValue = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       console.log(forceValue);
-
       if (document.fullscreenElement || document.fullscreen) {
-        gui.setInnerIcon('#fullscreen', 'BackToWindow', '退出全屏 (f)', true); // document.querySelector('#fullscreen').innerHTML = "退出全屏"
+        gui.setInnerIcon('#fullscreen', 'BackToWindow', '退出全屏 (f)', true);
+        // document.querySelector('#fullscreen').innerHTML = "退出全屏"
       } else {
-        gui.setInnerIcon('#fullscreen', 'FullScreen', '全屏 (f)', true); // document.querySelector('#fullscreen').innerHTML = "全屏"
+        gui.setInnerIcon('#fullscreen', 'FullScreen', '全屏 (f)', true);
+        // document.querySelector('#fullscreen').innerHTML = "全屏"
       }
     }
   },
@@ -309,8 +298,8 @@ var gui = {
       }, 1050);
     }
   }
-}; // assign triggers
-
+};
+// assign triggers
 window.onresize = gui.updateRightHeight();
 '#fullscreen'.assignClick(function () {
   return gui.fullscreen.toggle();
@@ -340,11 +329,9 @@ document.querySelectorAll('context>operation>interaction').forEach(function (ite
   });
 });
 gui.updateRightHeight();
-
 if (!settings.usingNW) {
   document.querySelector('#winontop').classList.add('hidden');
 }
-
 document.addEventListener('fullscreenchange', function () {
   gui.fullscreen.onChange();
 });
@@ -369,18 +356,15 @@ var notes = {
   },
   setActive: function setActive() {
     var _this = this;
-
     var force = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     // light it up. force: will force it to light up infinitely till next trigger
     this.save();
     this.container.classList.add('isactive');
-
     try {
       clearTimeout(this.activeTimeout);
     } catch (error) {
       console.error(error);
     }
-
     if (textareaItem.value != "" && !force && window.innerWidth > 1024 && !this.isAlwaysOn) {
       this.activeTimeout = setTimeout(function () {
         _this.container.classList.remove('isactive');
@@ -389,28 +373,22 @@ var notes = {
   },
   init: function init() {
     this.load();
-
     this.item().onscroll = function () {
       return notes.setActive();
     };
-
     this.item().onselectionchange = function () {
       return notes.setActive();
     };
-
     this.item().onselect = function () {
       return notes.setActive();
-    }; // this.item().ontouchstart = ()=>textAreaSetActive(true)
-
-
+    };
+    // this.item().ontouchstart = ()=>textAreaSetActive(true)
     this.item().ontouchmove = function () {
       return notes.setActive();
     };
-
     this.item().ontouchend = function () {
       return notes.setActive();
     };
-
     this.container.onscroll = function () {
       return notes.setActive();
     };
@@ -420,7 +398,6 @@ var notes = {
   },
   insertText: function insertText(target, text) {
     target.focus();
-
     if (typeof document.selection != "undefined") {
       document.selection.createRange().text = text;
     } else {
@@ -451,7 +428,6 @@ var openFile = {
           }, 50);
         }
       }
-
       document.querySelector('#URLtextbox').select();
     }
   },
@@ -461,22 +437,18 @@ var openFile = {
       var selectedFile = openFile.el.filePicker.files.item(0);
       console.log(selectedFile);
       var name = selectedFile.name,
-          size = selectedFile.size,
-          type = selectedFile.type;
+        size = selectedFile.size,
+        type = selectedFile.type;
       console.log("文件名:" + name + " 大小:" + size);
       document.querySelector('#file-info').innerHTML = "\u23F3 ".concat(name, "\uFF08").concat((size / 1000000).toFixed(1), "MB\uFF09").concat(settings.enableBruteForce ? ' 正在加载中...' : '', " ").concat(size >= 100000000 && settings.enableBruteForce ? '<br>文件过大，可能加载失败或页面崩溃。' : '');
       document.querySelector('#file-info').classList.toggle('hidden');
-
       if (settings.enableBruteForce) {
         // Bruteforce mode: for fun, and is buggy. Opening up 100MB+ files will cause explotion.
         var reader = new FileReader(); //这是核心,读取操作就是由它完成.
-
         console.log('BruteForce: init');
         reader.readAsDataURL(selectedFile);
-
         reader.onload = function () {
           console.log('BruteForce: done, ' + this.result.length);
-
           if (this.result.length == 0) {
             alert('此文件没有内容或过大，加载失败。');
           } else {
@@ -497,17 +469,14 @@ var openFile = {
         } else {
           webFrame.load(url);
         }
-
         modal.close('openfile');
       }, 350);
     }
   }
 };
-
 openFile.el.filePicker.onchange = function () {
   openFile.open.local();
 };
-
 '#URLpaste'.assignClick(function (event) {
   return openFile.gui.pasteContent(event);
 });
@@ -531,45 +500,33 @@ var shortcut = {
   },
   listen: function listen() {
     var _this2 = this;
-
     // set up the listener.
     document.onkeyup = function (event) {
       if (DEBUGMODE.keypress) {
         console.log('KEYUP:', event);
       }
-
       _this2.count++;
-
       if (_this2.list.has('any')) {
         var a = _this2.list.get('any');
-
         a(event);
       }
-
       if (!event.key) {
         console.warn(ReferenceError('Key does not exist'));
         return null;
       }
-
       var composedKey = event.key;
-
       if (event.altKey) {
         composedKey = 'alt+' + composedKey;
       }
-
       if (event.shiftKey) {
         composedKey = 'shift+' + composedKey;
       }
-
       if (event.ctrlKey) {
         composedKey = 'ctrl+' + composedKey;
       }
-
       composedKey = composedKey.toLocaleLowerCase();
-
       if (_this2.list.has(composedKey)) {
         var _a = _this2.list.get(composedKey);
-
         _a(event);
       }
     };
@@ -626,23 +583,19 @@ var shortcut = {
       document.querySelector('textarea').select();
     }
   });
-
   if (DEBUGMODE.quickRefresh) {
     shortcut.add('ctrl+r', function (event) {
       location.reload();
     });
   }
-
   if (settings.usingNW) {
     shortcut.add('F11', function () {
       gui.fullscreen.toggle();
     });
   }
-
   shortcut.add('ctrl+i', function (event) {
     if (event.target.tagName == 'TEXTAREA') {
       var playbackTime = 0;
-
       if (videoPlayer.isAvailable) {
         playbackTime = videoPlayer.el.currentTime;
       } else if (settings.usingNW) {
@@ -650,17 +603,14 @@ var shortcut = {
         if (webFrame.isAvailable == true) {
           var timeData = null;
           var frame1 = document.querySelector('iframe').contentWindow;
-
           if (frame1.document.querySelector('video')) {
             timeData = frame1.document.querySelector('video').currentTime;
           } else if (frame1.document.querySelector('iframe').contentWindow.document.querySelector('video')) {
             timeData = frame1.document.querySelector('iframe').contentWindow.document.querySelector('video').currentTime;
           }
-
           if (DEBUGMODE.timefilterDebug) {
             console.log('InsTime: Web:', timeData);
           }
-
           if (timeData) {
             playbackTime = timeData;
           } else {
@@ -670,20 +620,16 @@ var shortcut = {
       } else {
         return 0;
       }
-
       if (DEBUGMODE.timefilterDebug) {
         console.log(playbackTime);
       }
-
       var playbackCounter = [0, 0, 0];
       playbackCounter[2] = Math.floor(playbackTime % 60);
       playbackCounter[1] = Math.floor(playbackTime / 60);
-
       while (playbackCounter[1] >= 60) {
         playbackCounter[1] -= 60;
         playbackCounter[0]++;
       }
-
       var fnstr = '';
       fnstr = playbackCounter[0] > 0 ? playbackCounter[0] + ':' : '';
       fnstr = fnstr.concat(playbackCounter[0] > 0 && playbackCounter[1] < 10 ? '0' : '' + playbackCounter[1] + ':');
@@ -691,14 +637,11 @@ var shortcut = {
       notes.insertText(event.target, fnstr);
     }
   });
-
   if (settings.usingNW) {
     shortcut.add('ctrl+p', function (event) {
       var targetVideoElement = null;
-
       if (webFrame.isAvailable == true) {
         var frame1 = document.querySelector('iframe').contentWindow;
-
         if (frame1.document.querySelector('video')) {
           targetVideoElement = frame1.document.querySelector('video');
         } else if (frame1.document.querySelector('iframe').contentWindow.document.querySelector('video')) {
@@ -707,7 +650,6 @@ var shortcut = {
       } else if (videoPlayer.isAvailable) {
         targetVideoElement = videoPlayer.el;
       }
-
       if (targetVideoElement) {
         if (targetVideoElement.paused) {
           targetVideoElement.play();
@@ -720,83 +662,92 @@ var shortcut = {
       location.reload();
     });
   }
-
   shortcut.add('ctrl+]', function () {
     notes.isAlwaysOn = !notes.isAlwaysOn;
   });
   shortcut.listen();
 }
-
 document.onkeydown = function (event) {
   if (DEBUGMODE.keypress) {
     console.log('KEYDN:', event);
   }
-
   if (event.key == 'Control') {
     notes.setActive(true);
   }
 };
-
 notes.setActive();
-
 function calculateTimeString(time) {
   // a typical time generator, sample: 121 => 2:01. Support up to hours level.
   var playbackCounter = [0, 0, 0];
   playbackCounter[2] = Math.floor(time % 60);
   playbackCounter[1] = Math.floor(time / 60);
-
   while (playbackCounter[1] >= 60) {
     playbackCounter[1] -= 60;
     playbackCounter[0]++;
   }
-
   var fnstr = '';
   fnstr = playbackCounter[0] > 0 ? playbackCounter[0] + ':' : '';
   fnstr = fnstr.concat(playbackCounter[0] > 0 && playbackCounter[1] < 10 ? '0' : '' + playbackCounter[1] + ':');
   fnstr = fnstr.concat((playbackCounter[2] >= 10 ? '' : '0') + playbackCounter[2]);
   return fnstr;
 }
-
 setInterval(function () {
   //refreshes every 100ms, setting time bar
   if (frameCount >= 0) {
     if (videoPlayer.isAvailable) {
       var mediaPlayback = videoPlayer.el;
-      document.querySelector('#play-length').setAttribute('style', 'width: ' + (mediaPlayback.currentTime / mediaPlayback.duration * 100).toFixed(2) + '%;'); // let existstr = Math.floor(mediaPlayback.currentTime / 60) + ':' + Math.floor(mediaPlayback.currentTime % 60)
+      document.querySelector('#play-length').setAttribute('style', 'width: ' + (mediaPlayback.currentTime / mediaPlayback.duration * 100).toFixed(2) + '%;');
+      // let existstr = Math.floor(mediaPlayback.currentTime / 60) + ':' + Math.floor(mediaPlayback.currentTime % 60)
       // let totalstr = Math.floor(mediaPlayback.duration / 60) + ':' + Math.floor(mediaPlayback.duration % 60)
-
       document.querySelector('.media-playback-timing').innerHTML = calculateTimeString(mediaPlayback.currentTime) + ' / ' + calculateTimeString(mediaPlayback.duration);
     }
   }
-
   frameCount++;
   gui.updateRightHeight();
 }, 100);
-
 window.onbeforeunload = function () {
   if (!settings.localStorage && textareaItem.value != "") {
     return '文本框内仍有内容，确认离开？';
   }
 };
-
 function videoUrlParser() {
   var url = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : new String();
   //Parse the URL for good. RUBBISH CODE AHEAD!!!
+  if (typeof url !== 'string' || !url.trim()) {
+    return {
+      mode: 'error',
+      error: '请输入有效链接。'
+    };
+  }
+  url = url.trim();
+  if (url.startsWith('||')) {
+    var frameURL = url.slice(2).trim();
+    try {
+      var parsedFrameURL = new URL(frameURL);
+      if (!['http:', 'https:'].includes(parsedFrameURL.protocol)) {
+        throw new Error('Unsupported protocol');
+      }
+    } catch (error) {
+      return {
+        mode: 'error',
+        error: '仅支持通过 HTTP(S) 加载网页。'
+      };
+    }
+  }
   var targetURL;
   var lowURL = url.toLocaleLowerCase();
-
   if ((lowURL.startsWith('av') || lowURL.startsWith('bv') || url.indexOf('www.bilibili.com/video/') != -1 || url.indexOf('b23.tv/') != -1) && !url.startsWith('||')) {
     //bilibili mode
     // targetURL = 'https://www.bilibili.com/blackboard/newplayer.html?aid=' + targetURL
     if (settings.allowExperimentalAPI.bilibili == 1) {
-      targetURL = 'http://xbeibeix.com/api/bilibilivideo.php?url=' + url; // let req = new XMLHttpRequest()
+      targetURL = 'http://xbeibeix.com/api/bilibilivideo.php?url=' + url;
+      // let req = new XMLHttpRequest()
     } else {
       targetURL = url.replace('www.bilibili.com/video/', '');
       targetURL = targetURL.replace('b23.tv/', '');
       targetURL = targetURL.replace('https://', '');
       targetURL = targetURL.replace('?p=', '&page=');
       targetURL = targetURL.replace('?', '&');
-
       if (lowURL.indexOf('bv') != -1) {
         targetURL = targetURL.replace('BV', '');
         targetURL = targetURL.replace('bv', '');
@@ -806,11 +757,9 @@ function videoUrlParser() {
         targetURL = 'https://player.bilibili.com/player.html?aid=' + targetURL + '&high_quality=1';
       }
     }
-
     if (DEBUGMODE.inspectGeneratedURL) {
       console.log('ParseURL', 'bilibili', targetURL);
     }
-
     return {
       mode: 'bilibili',
       parsed: targetURL,
@@ -827,15 +776,12 @@ function videoUrlParser() {
       targetURL = targetURL.replace('https://', '');
       targetURL = targetURL.replace('ac', '');
       targetURL = targetURL.substr(0, targetURL.indexOf('_'));
-    } // targetURL = targetURL.replace('?p=', '&page=')
-
-
+    }
+    // targetURL = targetURL.replace('?p=', '&page=')
     targetURL = 'https://www.acfun.cn/player/ac' + targetURL;
-
     if (DEBUGMODE.inspectGeneratedURL) {
       console.log('ParseURL', 'acfun', targetURL);
     }
-
     return {
       mode: 'acfun',
       parsed: targetURL,
@@ -843,23 +789,20 @@ function videoUrlParser() {
         if (window.innerWidth <= 600) {
           alert('acfun 网页播放器在手机上效果不一定正常。');
         }
-
         webFrame.load(targetURL, true);
       }
     };
   } else if (url.indexOf('web.microsoftstream.com/video/') != -1 && !url.startsWith('||')) {
-    targetURL = url.replace('web.microsoftstream.com/video/', 'web.microsoftstream.com/embed/video/'); // targetURL = targetURL.replace('?p=', '&page=')
-
+    targetURL = url.replace('web.microsoftstream.com/video/', 'web.microsoftstream.com/embed/video/');
+    // targetURL = targetURL.replace('?p=', '&page=')
     if (targetURL.indexOf('?st=') != -1) {
       targetURL = targetURL + '&autoplay=true&amp;showinfo=false';
     } else {
       targetURL = targetURL + '?autoplay=true&amp;showinfo=false';
     }
-
     if (DEBUGMODE.inspectGeneratedURL) {
       console.log('ParseURL', 'msstream', targetURL);
     }
-
     return {
       mode: 'ms-stream',
       parsed: targetURL,
@@ -870,7 +813,6 @@ function videoUrlParser() {
     };
   } else if (url.indexOf('youtube.com') != -1 && !url.startsWith('||')) {
     var urlOBJ = new URL(url);
-
     if (settings.isIE) {
       return {
         mode: 'frame',
@@ -881,16 +823,13 @@ function videoUrlParser() {
         }
       };
     }
-
     var videoID = urlOBJ.searchParams.get('v');
     var timeiter = urlOBJ.searchParams.get('t');
     targetURL = 'https://www.youtube.com/embed/' + videoID;
-
     if (timeiter) {
       timeiter = timeiter.replace('s', '');
       targetURL = targetURL + '?start=' + timeiter;
     }
-
     return {
       mode: 'youtube',
       parsed: targetURL,
@@ -901,11 +840,9 @@ function videoUrlParser() {
     };
   } else if (url.startsWith('||')) {
     targetURL = url.replace('||', '');
-
     if (DEBUGMODE.inspectGeneratedURL) {
       console.log('ParseURL', 'frame', targetURL);
     }
-
     return {
       mode: 'frame',
       parsed: targetURL,
@@ -913,7 +850,8 @@ function videoUrlParser() {
         webFrame.load(targetURL, false);
         document.querySelector('.left').classList.remove('bilibili');
       }
-    }; // } else if (url.startsWith('blob:')) {
+    };
+    // } else if (url.startsWith('blob:')) {
     //     return {
     //         mode: 'blob',
     //         error: 'Blob is not supported by now.'
@@ -926,13 +864,11 @@ function videoUrlParser() {
         if (DEBUGMODE.inspectGeneratedURL) {
           console.log('ParseURL', 'video', url);
         }
-
         videoPlayer.activate(url);
       }
     };
   }
 }
-
 var webFrame = {
   url: function url() {
     _this3.el.src;
@@ -945,13 +881,11 @@ var webFrame = {
     videoPlayer.unload();
     document.title = 'VideoNotes - Loading...';
     document.querySelector('video').classList.add('hidden');
-
     if (isOnlineStream) {
       document.querySelector('.left').classList.add('bilibili');
     } else {
       document.querySelector('.left').classList.remove('bilibili');
     }
-
     this.el.classList.remove('hidden');
     this.el.src = url;
     gui.el.left.classList.add('hasframe');
@@ -967,11 +901,9 @@ var webFrame = {
     this.isAvailable = false;
   }
 };
-
 webFrame.el.contentWindow.onbeforeunload = function () {
   gui.loadIndicator.show();
 };
-
 webFrame.el.onload = function () {
   try {
     document.title = 'VideoNotes - ' + webFrame.el.contentWindow.document.title;
@@ -979,41 +911,33 @@ webFrame.el.onload = function () {
     document.title = 'VideoNotes - ' + webFrame.el.src;
     console.warn(e);
   }
-
   gui.loadIndicator.hide();
-
   if (gui.mode == 'bilibili' && settings.usingNW) {
     var insertedStyle = webFrame.el.contentDocument.createElement('style');
     insertedStyle.innerHTML = ".bilibili-player .bilibili-player-area div.bilibili-player-video-control{background: black;border-color: black;opacity: 0.8}.bilibili-player-video-recommend-container, .bilibili-player-video-recommend,.bilibili-player-video-jump-to-bilibili-detail-bar,.bilibili-player-video-sendjumbar,.bilibili-player-video-pause-panel-container-qrcode,.bilibili-player-video-suspension-bar-btn-group-jumpbtn{\tdisplay: none !important;}.bilibili-player .bilibili-player-area .bilibili-player-video-control .bilibili-player-video-progress-bar{opacity: 0.6}.bilibili-player-video-sendjumpbar{display:none}div.bilibili-player-video-control{opacity: 0.5!important;transition:.25s all}div.bilibili-player-video-control:hover{opacity:0.9!important}";
     webFrame.el.contentDocument.documentElement.appendChild(insertedStyle);
   }
 };
-
 webFrame.el.contentWindow.onerror = function () {
   alert('加载页面内容时出现了点问题，请稍后再试。');
   self.onload();
 };
-
 function onSubmitVideoURL() {
   var frame = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
   // runs as user submit their link.
   // frame: boolean: force it as webpage.
   var inputURL = openFile.el.textBox.value;
-
   if (inputURL) {
     if (frame) {
       if (inputURL.indexOf('://') == -1) {
-        inputURL = 'http://' + inputURL;
+        inputURL = 'https://' + inputURL;
       }
-
       inputURL = '||' + inputURL;
     }
-
     if (inputURL.indexOf(share.service) != -1 && !settings.isIE) {
       var parser = new URL(inputURL);
       inputURL = parser.searchParams.get('query');
     }
-
     console.log(inputURL);
     var res = videoUrlParser(inputURL);
     document.querySelector('#file-info').innerHTML = '⏳ 正在处理链接并加载中...';
@@ -1021,7 +945,6 @@ function onSubmitVideoURL() {
     gui.mode = res.mode;
     history.change(inputURL);
     document.querySelector('#file-info').classList.toggle('hidden');
-
     if (!res.error) {
       setTimeout(function () {
         modal.close('openfile');
@@ -1037,12 +960,11 @@ function onSubmitVideoURL() {
     }
   }
 }
-
 function togglePlayPause() {
   //onclick playpause button
-  var a = new URL(window.location.href); // console.log(a, videoPlayer.el.src)
+  var a = new URL(window.location.href);
+  // console.log(a, videoPlayer.el.src)
   // console.log(videoPlayer.el.src.indexOf(a.pathname)!=1)
-
   if (videoPlayer.el.src.indexOf(a.pathname) != -1 || videoPlayer.inError) {
     modal.open('openfile');
   } else {
@@ -1050,11 +972,10 @@ function togglePlayPause() {
       videoPlayer.play();
     } else {
       videoPlayer.pause();
-    } // videoPlayer.isPaused() ? videoPlayer.play() : videoPlayer.pause()
-
+    }
+    // videoPlayer.isPaused() ? videoPlayer.play() : videoPlayer.pause()
   }
 }
-
 '#playpause'.assignClick(function () {
   togglePlayPause();
 });
@@ -1091,7 +1012,6 @@ var videoPlayer = {
   },
   activate: function activate(url) {
     var _this4 = this;
-
     var overrideTitle = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
     webFrame.el.classList.add('hidden');
     this.el.classList.remove('hidden');
@@ -1104,31 +1024,27 @@ var videoPlayer = {
     setTimeout(function () {
       gui.loadIndicator.hide();
     }, 2500);
-
     if (overrideTitle) {
       document.title = 'VideoNotes - ' + overrideTitle;
     } else {
       document.title = 'VideoNotes - ' + this.el.src;
     }
-
     this.isAvailable = true;
-
     this.el.onerror = function (e) {
       _this4.onError(e);
     };
-
     this.el.onplay = function () {
-      gui.setInnerIcon('#playpause', 'Pause', '暂停'); // label.innerHTML = '暂停'
+      gui.setInnerIcon('#playpause', 'Pause', '暂停');
+      // label.innerHTML = '暂停'
     };
-
     this.el.onpause = function () {
-      gui.setInnerIcon('#playpause', 'Play', '播放'); // label.innerHTML = '播放'
+      gui.setInnerIcon('#playpause', 'Play', '播放');
+      // label.innerHTML = '播放'
     };
-
     this.el.onended = function () {
-      gui.setInnerIcon('#playpause', 'Play', '重放'); // label.innerHTML = '重放'
+      gui.setInnerIcon('#playpause', 'Play', '重放');
+      // label.innerHTML = '重放'
     };
-
     this.el.play();
     document.querySelector('#openfile-sub').classList.remove('hidden');
   },
@@ -1147,7 +1063,6 @@ var videoPlayer = {
     var pausedbef = this.isPaused();
     this.pause();
     var destTimeString = prompt('请输入目标时间（如 5:26）');
-
     if (destTimeString === null || destTimeString == "") {
       if (!pausedbef) {
         this.play();
@@ -1156,32 +1071,25 @@ var videoPlayer = {
       destTimeString = destTimeString.trim();
       destTimeString = destTimeString.replace('：', ':');
       var destTimeArr = destTimeString.split(':');
-
       if (DEBUGMODE.jumpDebug) {
         console.log(destTimeArr);
       }
-
       var destTime = 0;
       var destLevel = -1;
-
       if (DEBUGMODE.jumpDebug) {
         console.groupCollapsed('destTimeParse');
       }
-
       for (var i = destTimeArr.length - 1; i >= 0; i--) {
         destLevel++;
         destTime += parseInt(destTimeArr[i]) * Math.pow(60, destLevel);
-
         if (DEBUGMODE.jumpDebug) {
           console.log(parseInt(destTimeArr[i]) * Math.pow(60, destLevel));
         }
       }
-
       if (DEBUGMODE.jumpDebug) {
         console.groupEnd();
         console.log(destTime);
       }
-
       if (!isNaN(destTime)) {
         videoPlayer.el.currentTime = destTime;
       }
@@ -1224,10 +1132,8 @@ var modal = {
   },
   el: function el() {
     var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-
     if (name != null) {
       var b = document.querySelector('modal#' + name);
-
       if (b == null) {
         throw 'ERROR: modal not found';
       } else {
@@ -1239,22 +1145,17 @@ var modal = {
   },
   open: function open() {
     var _this5 = this;
-
     var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-
     if (target != null) {
       var theElement = document.querySelector('modal#' + target);
       theElement.style.zIndex = this.basezindex++;
       theElement.classList.remove('hidden');
-
       if (settings.isIE) {
         theElement.style.position = "relative";
       }
-
       setTimeout(function () {
         theElement.classList.remove('fadeout');
         var modelInf = _this5.custom[target];
-
         if (modelInf != undefined && modelInf.onOpen != undefined) {
           modelInf.onOpen();
         }
@@ -1263,7 +1164,6 @@ var modal = {
   },
   isOpen: function isOpen() {
     var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-
     if (target) {
       return !document.querySelector('modal#' + target).classList.contains('fadeout');
     } else {
@@ -1272,7 +1172,6 @@ var modal = {
   },
   close: function close() {
     var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-
     if (target != null) {
       document.querySelector('modal#' + target).classList.add('fadeout');
       setTimeout(function () {
@@ -1282,7 +1181,6 @@ var modal = {
   },
   init: function init() {
     var _this6 = this;
-
     document.querySelectorAll('.close-button').forEach(function (item) {
       item.onclick = function (event) {
         _this6.close(item.parentElement.parentElement.id);
@@ -1303,7 +1201,6 @@ var modal = {
   }
 };
 modal.init();
-
 if (navigator.userAgent.indexOf('Firefox') == -1) {
   //Temporary fix for rendering issue.
   // Chromium will lag a lot whan rendering welcome,
@@ -1311,15 +1208,14 @@ if (navigator.userAgent.indexOf('Firefox') == -1) {
   // I'll say firefox does it very smoothly.
   modal.open('welcome');
   modal.close('welcome');
-  console.info('Doing settings workaround'); // document.querySelector('modal#settings').classList.add('fadeout')
+  console.info('Doing settings workaround');
+  // document.querySelector('modal#settings').classList.add('fadeout')
 }
-
 var history = {
   cur: '',
   setup: function setup(obj) {
     if (settings.localStorage) {
       var a = localStorage.getItem('VNHistory');
-
       if (a) {
         this.cur = a;
         document.querySelector('#history-btn').innerHTML = a;
@@ -1357,7 +1253,6 @@ var share = {
     } else {
       navigator.clipboard.writeText(uri);
     }
-
     alert('似乎已复制分享链接（视频为最近一次观看的在线视频），可粘贴查看。');
   }
 };
@@ -1368,22 +1263,19 @@ var share = {
 });
 setTimeout(function () {
   if (shortcut.count <= 1) {
-    modal.open('openfile'); // modal.open('settings')
+    modal.open('openfile');
+    // modal.open('settings')
   }
-
   if (!DEBUGMODE.devAction) {
     document.querySelector('#load-cover').parentElement.removeChild(document.querySelector('#load-cover'));
   }
-
   if (isFirstRun) {
     modal.open('welcome');
   }
 }, 1000);
-
 if (settings.usingNW || navigator.userAgent.toLowerCase().indexOf('windows') == -1) {
   document.querySelector('#dl-desktop').classList.add('hidden');
 }
-
 '#dl-desktop'.assignClick(function () {
   window.open('https://github.com/smallg0at/VideoNotes/releases/latest/');
 });
@@ -1395,10 +1287,8 @@ setTimeout(function () {
     onSubmitVideoURL();
   }
 }, 3500);
-
 if (DEBUGMODE.devAction) {
   // remove the cover as soon as the script done working. dbg use only!
   document.querySelector('#load-cover').parentElement.removeChild(document.querySelector('#load-cover'));
 }
-
 notes.onFinishLoad();
