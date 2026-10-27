@@ -5,11 +5,11 @@
   "main": "VideoNotes.html",
   "scripts": {
     "babel": "node ./babelgen.js",
-    "dist": "build --tasks win-x64 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
-    "distmac": "build --tasks mac-x64 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
-    "dist32": "build --tasks win-x86 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
-    "start": "run --x64 --mirror https://npm.taobao.org/mirrors/nwjs/ .",
-    "start32": "run --x86 --mirror https://npm.taobao.org/mirrors/nwjs/ ."
+    "dist": "build --tasks win-x64 --mirror https://dl.nwjs.io/ .",
+    "distmac": "build --tasks mac-x64 --mirror https://dl.nwjs.io/ .",
+    "dist32": "build --tasks win-x86 --mirror https://dl.nwjs.io/ .",
+    "start": "run --x64 --mirror https://dl.nwjs.io/ .",
+    "start32": "run --x86 --mirror https://dl.nwjs.io/ ."
   },
   "build": {
     "nwVersion": "0.44.6",
@@ -58,7 +58,7 @@
     "localforage": "^1.10.0"
   },
   "overrides": {
-    "ansi-regex": "^6.2.2",
+    "ansi-regex": "^5.0.1",
     "brace-expansion": "^5.0.4",
     "cross-spawn": "^7.0.6",
     "debug": "^4.4.1",
